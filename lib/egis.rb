@@ -91,7 +91,7 @@ class Egis
         def set_data(raw_data)
           @_raw_data    = raw_data
           @_input_data  = process_input(raw_data) || raw_data
-          @_output_data = process_output(@input_data) || @_input_data
+          @_output_data = process_output(@_input_data) || @_input_data
           @_input       = input_class.new(@_input_data)
         end
 
@@ -112,7 +112,7 @@ class Egis
         def process_output(output); end
 
         def validate
-          @_input.instance_exec(@_input, &validation_block)
+          @_input.instance_exec(@_input, &validation_block) if validation_block
         end
 
         def result(args)
