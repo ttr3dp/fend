@@ -1,4 +1,4 @@
-require "egis/version"
+# frozen_string_literal: true
 
 class Egis
   class Error < StandardError; end
