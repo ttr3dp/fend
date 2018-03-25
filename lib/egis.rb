@@ -225,6 +225,8 @@ class Egis
         end
 
         def messages
+          return {} if success?
+
           @errors
         end
 
