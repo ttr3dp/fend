@@ -20,7 +20,7 @@ class Egis
       min_length:               ->(value) { "length cannot be less than #{value}" },
       presence:                 -> { "must be present" },
       type:                     ->(type) { "must be #{type.to_s.downcase}" }
-    }
+    }.freeze
 
     ACCEPTABLE       = [1, "1", true, "true", "TRUE", :yes, "YES", "yes"].freeze
     UNSUPPORTED_TYPE = "__unsupported_type__".freeze
