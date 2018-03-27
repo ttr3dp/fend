@@ -1,16 +1,16 @@
 require "spec_helper"
 
-RSpec.describe Egis::Result do
+RSpec.describe Fend::Result do
   let(:result) do
     described_class.new(input: { test: "test" }, output: { test: "TEST" }, errors: { test: ["must be integer"] })
   end
 
-  describe ".egis_class" do
+  describe ".fend_class" do
     it "references namespace class" do
-      expect(described_class.egis_class).to be(Egis)
+      expect(described_class.fend_class).to be(Fend)
 
-      subclass = Class.new(Egis)
-      expect(subclass::Result.egis_class).to be(subclass)
+      subclass = Class.new(Fend)
+      expect(subclass::Result.fend_class).to be(subclass)
     end
   end
 

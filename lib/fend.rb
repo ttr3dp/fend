@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-class Egis
+class Fend
   class Error < StandardError; end
 
   class Input
-    @egis_class = ::Egis
+    @fend_class = ::Fend
   end
 
   class Result
-    @egis_class = ::Egis
+    @fend_class = ::Fend
   end
 
   @opts = {}
@@ -19,9 +19,9 @@ class Egis
 
     def self.load_plugin(name)
       unless plugin = @plugins[name]
-        require "egis/plugins/#{name}"
+        require "fend/plugins/#{name}"
 
-        raise Error, "plugin #{name} did not register itself correctly in Egis::Plugins" unless plugin = @plugins[name]
+        raise Error, "plugin #{name} did not register itself correctly in Fend::Plugins" unless plugin = @plugins[name]
       end
       plugin
     end
@@ -45,11 +45,11 @@ class Egis
           end
 
           input_class = Class.new(self::Input)
-          input_class.egis_class = subclass
+          input_class.fend_class = subclass
           subclass.const_set(:Input, input_class)
 
           result_class = Class.new(self::Result)
-          result_class.egis_class = subclass
+          result_class.fend_class = subclass
           subclass.const_set(:Result, result_class)
         end
 
@@ -121,7 +121,7 @@ class Egis
       end
 
       module InputClassMethods
-        attr_accessor :egis_class
+        attr_accessor :fend_class
       end
 
       module InputMethods
@@ -202,16 +202,16 @@ class Egis
         end
 
         def inspect
-          "#{egis_class.inspect}::Input"
+          "#{fend_class.inspect}::Input"
         end
 
         def to_s
-          "#{egis_class.inspect}::Input"
+          "#{fend_class.inspect}::Input"
         end
       end
 
       module ResultClassMethods
-        attr_accessor :egis_class
+        attr_accessor :fend_class
       end
 
       module ResultMethods
@@ -238,21 +238,21 @@ class Egis
           @errors.empty?
         end
 
-        def egis_class
-          self.class.egis_class
+        def fend_class
+          self.class.fend_class
         end
 
         def inspect
-          "#{egis_class.inspect}::Result"
+          "#{fend_class.inspect}::Result"
         end
 
         def to_s
-          "#{egis_class.inspect}::Result"
+          "#{fend_class.inspect}::Result"
         end
       end
     end
   end
 
-  extend Egis::Plugins::Core::ClassMethods
-  plugin Egis::Plugins::Core
+  extend Fend::Plugins::Core::ClassMethods
+  plugin Fend::Plugins::Core
 end

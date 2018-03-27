@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Egis
+class Fend
   module Plugins
     module DataProcessing
 

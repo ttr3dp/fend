@@ -1,7 +1,7 @@
 require "spec_helper"
 
 RSpec.describe "data processing plugin" do
-  let(:validation_class) { Class.new(Egis) { plugin :data_processing } }
+  let(:validation_class) { Class.new(Fend) { plugin :data_processing } }
 
   it "allows input processing" do
     validation_class.validate { }
@@ -254,7 +254,7 @@ RSpec.describe "data processing plugin" do
 
     it "raises if processing name is invalid" do
       expect { validation_class.plugin :data_processing, input: [:invalid] }.to(
-        raise_error(Egis::Error, "Built-in processing not found: ':invalid'")
+        raise_error(Fend::Error, "Built-in processing not found: ':invalid'")
       )
     end
   end

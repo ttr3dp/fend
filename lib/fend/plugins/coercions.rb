@@ -6,16 +6,16 @@ require "bigdecimal/util"
 require "date"
 require "time"
 
-class Egis
+class Fend
   module Plugins
     module Coercions
       class CoercionError < Error; end
 
       def self.configure(validation, opts = {}, &block)
-        validation.const_set(:Coerce, Class.new(Egis::Plugins::Coercions::Coerce)) unless validation.const_defined?(:Coerce)
+        validation.const_set(:Coerce, Class.new(Fend::Plugins::Coercions::Coerce)) unless validation.const_defined?(:Coerce)
         validation::Coerce.class_eval(&block) if block_given?
         validation.opts[:coercions_strict_error_message] = opts.fetch(:strict_error_message, validation.opts[:coercions_strict_error_message])
-        validation::Coerce.egis_class = validation
+        validation::Coerce.fend_class = validation
 
         validation.const_set(:Coercer, Coercer) unless validation.const_defined?(:Coercer)
       end
@@ -27,7 +27,7 @@ class Egis
         def inherited(subclass)
           super
           coerce_class = Class.new(self::Coerce)
-          coerce_class.egis_class = subclass
+          coerce_class.fend_class = subclass
           subclass.const_set(:Coerce, coerce_class)
         end
 
@@ -120,10 +120,10 @@ class Egis
       class Coerce
         STRICT_PREFIX = "strict_".freeze
 
-        @egis_class = Egis
+        @fend_class = Fend
 
         class << self
-          attr_accessor :egis_class
+          attr_accessor :fend_class
         end
 
         def self.coerce_to(type, &block)
@@ -239,7 +239,7 @@ class Egis
         private
 
         def raise_error(input, type)
-          message = egis_class.opts[:coercions_strict_error_message] || "cannot coerce #{input.inspect} to #{type}"
+          message = fend_class.opts[:coercions_strict_error_message] || "cannot coerce #{input.inspect} to #{type}"
           message = message.is_a?(String) ? message : message.call(input, type)
 
           raise CoercionError, message
@@ -251,8 +251,8 @@ class Egis
           /\A[[:space:]]*\z/.match?(input)
         end
 
-        def egis_class
-          self.class.egis_class
+        def fend_class
+          self.class.fend_class
         end
       end
     end

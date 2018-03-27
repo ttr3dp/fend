@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Egis
+class Fend
   module Plugins
     module FullMessages
       def self.configure(validation, opts = {})
@@ -21,7 +21,7 @@ class Egis
 
                               generate_full_messages(messages, param_is_array ? param : nil)
                             else
-                              param_name = egis_class.opts[:full_messages_array_member_names].fetch(array_param_name, param)
+                              param_name = fend_class.opts[:full_messages_array_member_names].fetch(array_param_name, param)
                               messages.map { |message| "#{param_name} #{message}"}
                             end
           end

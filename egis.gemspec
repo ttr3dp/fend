@@ -1,8 +1,8 @@
-require File.expand_path("../lib/egis/version", __FILE__)
+require File.expand_path("../lib/fend/version", __FILE__)
 
 Gem::Specification.new do |gem|
-  gem.name          = "egis"
-  gem.version       = Egis::VERSION
+  gem.name          = "fend"
+  gem.version       = Fend::VERSION
   gem.authors       = ["Aleksandar Radunovic"]
   gem.email         = ["aleksandar@radunovic.io"]
 

@@ -1,7 +1,7 @@
 require "spec_helper"
 
 RSpec.describe "full messages plugin" do
-  let(:validation) { Class.new(Egis) { plugin :full_messages } }
+  let(:validation) { Class.new(Fend) { plugin :full_messages } }
 
   it "prepends param name to error messages" do
     validation.validate do |i|
@@ -37,7 +37,7 @@ RSpec.describe "full messages plugin" do
   end
 
   describe ":array_member_names" do
-    let(:validation) { Class.new(Egis) { plugin :full_messages, array_member_names: { tags: :tag } } }
+    let(:validation) { Class.new(Fend) { plugin :full_messages, array_member_names: { tags: :tag } } }
 
     it "uses specified names instead of array member index" do
       validation.validate do |i|

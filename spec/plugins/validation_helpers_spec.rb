@@ -28,7 +28,7 @@ RSpec.shared_examples "validation helper" do |valid_values, invalid_values, erro
 end
 
 RSpec.describe "validation helpers plugin" do
-  let(:validation) { Class.new(Egis) { plugin :validation_helpers } }
+  let(:validation) { Class.new(Fend) { plugin :validation_helpers } }
 
   def validate(input)
     validation.call(input)
@@ -258,7 +258,7 @@ RSpec.describe "validation helpers plugin" do
     let(:messages) { helpers.each_with_object({}) { |key, result| result[key] = "custom #{key} message" } }
 
     let(:validation) do
-      Class.new(Egis) do
+      Class.new(Fend) do
         validate do
           param(:absence)                  { |p| p.validate_absence }
           param(:acceptance)               { |p| p.validate_acceptance }

@@ -1,8 +1,8 @@
 require "spec_helper"
-require "egis"
+require "fend"
 
-RSpec.describe "Egis" do
-  let(:validation_class) { Class.new(Egis) }
+RSpec.describe "Fend" do
+  let(:validation_class) { Class.new(Fend) }
   let(:validation) { validation_class.new }
 
   describe ".inherited" do
@@ -40,11 +40,11 @@ RSpec.describe "Egis" do
     end
 
     it "duplicates core classes" do
-      expect(Egis::Input).not_to be validation_class::Input
-      expect(validation_class).to be validation_class::Input::egis_class
+      expect(Fend::Input).not_to be validation_class::Input
+      expect(validation_class).to be validation_class::Input::fend_class
 
-      expect(Egis::Result).not_to be validation_class::Result
-      expect(validation_class).to be validation_class::Result::egis_class
+      expect(Fend::Result).not_to be validation_class::Result
+      expect(validation_class).to be validation_class::Result::fend_class
     end
   end
 

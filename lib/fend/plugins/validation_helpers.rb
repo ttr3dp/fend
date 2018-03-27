@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Egis
+class Fend
   module Plugins
     DEFAULT_MESSAGES = {
       absence:                  -> { "must be absent" },
@@ -32,7 +32,7 @@ class Egis
 
       module InputClassMethods
         def default_messages
-          @default_messages ||= DEFAULT_MESSAGES.merge(egis_class.opts[:validation_default_messages])
+          @default_messages ||= DEFAULT_MESSAGES.merge(fend_class.opts[:validation_default_messages])
         end
       end
 

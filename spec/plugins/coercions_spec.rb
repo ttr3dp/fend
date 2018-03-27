@@ -8,24 +8,24 @@ RSpec.shared_examples "strict type coercion" do |type, uncoercible_input|
     before { setup_validation("strict_#{type}".to_sym, nil) }
 
     it "raises error" do
-      expect { validation.call(test: uncoercible_input) }.to raise_error(Egis::Plugins::Coercions::CoercionError, "cannot coerce #{uncoercible_input.inspect} to #{type}")
+      expect { validation.call(test: uncoercible_input) }.to raise_error(Fend::Plugins::Coercions::CoercionError, "cannot coerce #{uncoercible_input.inspect} to #{type}")
     end
 
     it "raises error with custom message" do
       validation.opts[:coercions_strict_error_message] = "custom message"
 
-      expect { validation.call(test: uncoercible_input) }.to raise_error(Egis::Plugins::Coercions::CoercionError, "custom message")
+      expect { validation.call(test: uncoercible_input) }.to raise_error(Fend::Plugins::Coercions::CoercionError, "custom message")
 
       validation.opts[:coercions_strict_error_message] = ->(input, coercion_type) { "nope #{input} #{coercion_type}" }
 
-      expect { validation.call(test: uncoercible_input) }.to raise_error(Egis::Plugins::Coercions::CoercionError, "nope #{uncoercible_input} #{type}")
+      expect { validation.call(test: uncoercible_input) }.to raise_error(Fend::Plugins::Coercions::CoercionError, "nope #{uncoercible_input} #{type}")
     end
   end
 end
 
 
 RSpec.describe "coercions plugin" do
-  let(:validation) { Class.new(Egis) { plugin :coercions } }
+  let(:validation) { Class.new(Fend) { plugin :coercions } }
 
   def setup_validation(type, comparison_value)
     validation.coerce(test: type)
@@ -39,12 +39,12 @@ RSpec.describe "coercions plugin" do
     expect(validation.call(input)).to be_success
   end
 
-  describe "Egis.inherited" do
+  describe "Fend.inherited" do
     it "duplicates Coerce class" do
       subclass = Class.new(validation)
 
       expect(subclass::Coerce).not_to be(validation)
-      expect(subclass::Coerce.egis_class).to be(subclass)
+      expect(subclass::Coerce.fend_class).to be(subclass)
     end
 
     it "does not duplicate Coercer class" do
@@ -54,7 +54,7 @@ RSpec.describe "coercions plugin" do
     end
   end
 
-  describe "Egis#type_schema" do
+  describe "Fend#type_schema" do
     it "returns type schema" do
       validation.coerce(foo: :string, bar: :integer)
 
@@ -67,7 +67,7 @@ RSpec.describe "coercions plugin" do
 
     it "raises if schema is of invalid type" do
       validation.coerce([:foo, :bar, :baz])
-      expect { validation.new.type_schema }.to raise_error(Egis::Error, "type schema must be hash")
+      expect { validation.new.type_schema }.to raise_error(Fend::Error, "type schema must be hash")
     end
   end
 
@@ -343,7 +343,7 @@ RSpec.describe "coercions plugin" do
   end
 
   describe "custom coercions" do
-    let(:validation) { Class.new(Egis) }
+    let(:validation) { Class.new(Fend) }
 
     it "supports adding custom type coercions" do
       validation.plugin(:coercions) do
@@ -357,12 +357,12 @@ RSpec.describe "coercions plugin" do
       expect_validation_success(test: "string")
 
       setup_validation(:strict_my_string, nil)
-      expect { validation.call(test: nil) }.to raise_error(Egis::Plugins::Coercions::CoercionError, "cannot coerce nil to my_string")
+      expect { validation.call(test: nil) }.to raise_error(Fend::Plugins::Coercions::CoercionError, "cannot coerce nil to my_string")
     end
   end
 
   describe "overriding default coercion methods" do
-    let(:validation) { Class.new(Egis) }
+    let(:validation) { Class.new(Fend) }
 
     it "supports overriding builtin coercion methods" do
       validation.plugin(:coercions) do
