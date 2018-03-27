@@ -3,7 +3,7 @@
 class Fend
   class Error < StandardError; end
 
-  class Input
+  class Param
     @fend_class = ::Fend
   end
 
@@ -44,9 +44,9 @@ class Fend
             end
           end
 
-          input_class = Class.new(self::Input)
+          input_class = Class.new(self::Param)
           input_class.fend_class = subclass
-          subclass.const_set(:Input, input_class)
+          subclass.const_set(:Param, input_class)
 
           result_class = Class.new(self::Result)
           result_class.fend_class = subclass
@@ -60,8 +60,8 @@ class Fend
           self.include(plugin::InstanceMethods)           if defined?(plugin::InstanceMethods)
           self.extend(plugin::ClassMethods)               if defined?(plugin::ClassMethods)
 
-          self::Input.include(plugin::InputMethods)       if defined?(plugin::InputMethods)
-          self::Input.extend(plugin::InputClassMethods)   if defined?(plugin::InputClassMethods)
+          self::Param.include(plugin::ParamMethods)       if defined?(plugin::ParamMethods)
+          self::Param.extend(plugin::ParamClassMethods)   if defined?(plugin::ParamClassMethods)
 
           self::Result.include(plugin::ResultMethods)     if defined?(plugin::ResultMethods)
           self::Result.extend(plugin::ResultClassMethods) if defined?(plugin::ResultClassMethods)
@@ -100,7 +100,7 @@ class Fend
         end
 
         def input_class
-          self.class::Input
+          self.class::Param
         end
 
         def result_class
@@ -120,11 +120,11 @@ class Fend
         end
       end
 
-      module InputClassMethods
+      module ParamClassMethods
         attr_accessor :fend_class
       end
 
-      module InputMethods
+      module ParamMethods
         attr_reader :value, :errors
 
         def initialize(value)
@@ -202,11 +202,11 @@ class Fend
         end
 
         def inspect
-          "#{fend_class.inspect}::Input"
+          "#{fend_class.inspect}::Param"
         end
 
         def to_s
-          "#{fend_class.inspect}::Input"
+          "#{fend_class.inspect}::Param"
         end
       end
 

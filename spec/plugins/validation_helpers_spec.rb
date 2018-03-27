@@ -128,7 +128,7 @@ RSpec.describe "validation helpers plugin" do
     it_behaves_like("validation helper that accepts custom error messsage", :gteq, nil, 4)
 
     it "is aliased as #validate_gteq" do
-      input = validation::Input.new({})
+      input = validation::Param.new({})
       expect(input.method(:validate_gteq)).to eq(input.method(:validate_greater_than_or_equal_to))
     end
   end
@@ -165,7 +165,7 @@ RSpec.describe "validation helpers plugin" do
     it_behaves_like("validation helper that accepts custom error messsage", :lteq, nil, 3)
 
     it "is aliased as #validate_lteq" do
-      input = validation::Input.new({})
+      input = validation::Param.new({})
       expect(input.method(:validate_lteq)).to eq(input.method(:validate_less_than_or_equal_to))
     end
   end

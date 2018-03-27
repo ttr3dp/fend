@@ -40,8 +40,8 @@ RSpec.describe "Fend" do
     end
 
     it "duplicates core classes" do
-      expect(Fend::Input).not_to be validation_class::Input
-      expect(validation_class).to be validation_class::Input::fend_class
+      expect(Fend::Param).not_to be validation_class::Param
+      expect(validation_class).to be validation_class::Param::fend_class
 
       expect(Fend::Result).not_to be validation_class::Result
       expect(validation_class).to be validation_class::Result::fend_class
@@ -76,7 +76,7 @@ RSpec.describe "Fend" do
 
   describe "#input_class" do
     it "returns input class" do
-      expect(validation.input_class).to eq(validation_class::Input)
+      expect(validation.input_class).to eq(validation_class::Param)
     end
   end
 

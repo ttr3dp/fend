@@ -30,13 +30,13 @@ class Fend
         validation.opts[:validation_default_messages] = (validation.opts[:validation_default_messages] || {}).merge(opts[:default_messages] || {})
       end
 
-      module InputClassMethods
+      module ParamClassMethods
         def default_messages
           @default_messages ||= DEFAULT_MESSAGES.merge(fend_class.opts[:validation_default_messages])
         end
       end
 
-      module InputMethods
+      module ParamMethods
         def validate_absence(opts = {})
           add_error(:absence, opts[:message]) if present?
         end
