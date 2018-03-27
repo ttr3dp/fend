@@ -44,9 +44,9 @@ class Fend
             end
           end
 
-          input_class = Class.new(self::Param)
-          input_class.fend_class = subclass
-          subclass.const_set(:Param, input_class)
+          param_class = Class.new(self::Param)
+          param_class.fend_class = subclass
+          subclass.const_set(:Param, param_class)
 
           result_class = Class.new(self::Result)
           result_class.fend_class = subclass
@@ -85,21 +85,21 @@ class Fend
           set_data(raw_data)
           validate
 
-          result(input: @_input_data, output: @_output_data, errors: @_input.errors)
+          result(input: @_input_data, output: @_output_data, errors: @_root_param.errors)
         end
 
         def set_data(raw_data)
           @_raw_data    = raw_data
           @_input_data  = process_input(raw_data) || raw_data
           @_output_data = process_output(@_input_data) || @_input_data
-          @_input       = input_class.new(@_input_data)
+          @_root_param  = param_class.new(@_input_data)
         end
 
         def validation_block
           self.class.validation_block
         end
 
-        def input_class
+        def param_class
           self.class::Param
         end
 
@@ -112,7 +112,7 @@ class Fend
         def process_output(output); end
 
         def validate
-          @_input.instance_exec(@_input, &validation_block) if validation_block
+          @_root_param.instance_exec(@_root_param, &validation_block) if validation_block
         end
 
         def result(args)
@@ -207,6 +207,10 @@ class Fend
 
         def to_s
           "#{fend_class.inspect}::Param"
+        end
+
+        def fend_class
+          self.class::fend_class
         end
       end
 

@@ -74,9 +74,9 @@ RSpec.describe "Fend" do
     end
   end
 
-  describe "#input_class" do
-    it "returns input class" do
-      expect(validation.input_class).to eq(validation_class::Param)
+  describe "#param_class" do
+    it "returns param class" do
+      expect(validation.param_class).to eq(validation_class::Param)
     end
   end
 
