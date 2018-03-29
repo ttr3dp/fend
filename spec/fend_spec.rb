@@ -151,7 +151,7 @@ RSpec.describe "Fend" do
 
     context "when params are nested" do
       before do
-        validation_class.validate  do |i|
+        validation_class.validate do |i|
           i.param(:address) do |address|
             address.add_error("must be hash") unless address.value.is_a?(Hash)
 

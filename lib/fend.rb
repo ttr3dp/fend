@@ -83,7 +83,7 @@ class Fend
       module InstanceMethods
         def call(raw_data)
           set_data(raw_data)
-          validate
+          validate(&validation_block)
 
           result(input: @_input_data, output: @_output_data, errors: @_root_param.errors)
         end
@@ -111,8 +111,8 @@ class Fend
 
         def process_output(output); end
 
-        def validate
-          validation_block.call(@_root_param) if validation_block
+        def validate(&block)
+          yield(@_root_param) if block_given?
         end
 
         def result(args)
@@ -134,20 +134,6 @@ class Fend
 
         def [](name)
           @value.fetch(name, nil) if @value.respond_to?(:fetch)
-        end
-
-        def dig(*path)
-          result = value
-
-          path.each do |point|
-            break if result.is_a?(Array) && !point.is_a?(Integer)
-
-            result = result.is_a?(Enumerable) ? result[point] : nil
-
-            break if result.nil?
-          end
-
-          result
         end
 
         def param(name, &block)
