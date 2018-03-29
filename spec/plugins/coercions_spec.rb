@@ -22,7 +22,6 @@ RSpec.shared_examples "strict type coercion" do |type, uncoercible_input|
   end
 end
 
-
 RSpec.describe "coercions plugin" do
   let(:validation) { Class.new(Fend) { plugin :coercions } }
 
@@ -69,22 +68,6 @@ RSpec.describe "coercions plugin" do
       expect { validation.new.type_schema }.to raise_error(Fend::Error, "type schema must be hash")
     end
   end
-
-  # {
-  #   string:    [],
-  #   symbol:    [],
-  #   integer:   [],
-  #   float:     [],
-  #   decimal:   [],
-  #   date:      [],
-  #   date_time: [],
-  #   time:      [],
-  #   boolean:   [],
-  #   array:     "[]",
-  #   hash:      "[]"
-  # }.each do |type, uncoercible_input|
-  #   extend SharedExamples::StrictCoercion.new(type, uncoercible_input)
-  # end
 
   context "when value is empty string" do
     let(:empty_strings) { ["", "   ", "\n", "\t", "\r", "  \n\r\t "] }
