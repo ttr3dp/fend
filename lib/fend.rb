@@ -151,15 +151,11 @@ class Fend
           return if (flat? && invalid?) || !@value.is_a?(Array)
 
           @value.each_with_index do |value, index|
-            if block.arity.eql?(2)
-              param = _build_param(value)
+            param = _build_param(value)
 
-              yield(param, index)
+            yield(param, index)
 
-              _nest_errors(index, param.errors) if param.invalid?
-            else
-              param(index, &block)
-            end
+            _nest_errors(index, param.errors) if param.invalid?
           end
         end
 
