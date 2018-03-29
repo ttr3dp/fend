@@ -112,7 +112,7 @@ class Fend
         def process_output(output); end
 
         def validate
-          @_root_param.instance_exec(@_root_param, &validation_block) if validation_block
+          validation_block.call(@_root_param) if validation_block
         end
 
         def result(args)
@@ -130,6 +130,24 @@ class Fend
         def initialize(value)
           @value = value
           @errors = []
+        end
+
+        def [](name)
+          @value.fetch(name, nil) if @value.respond_to?(:fetch)
+        end
+
+        def dig(*path)
+          result = value
+
+          path.each do |point|
+            break if result.is_a?(Array) && !point.is_a?(Integer)
+
+            result = result.is_a?(Enumerable) ? result[point] : nil
+
+            break if result.nil?
+          end
+
+          result
         end
 
         def param(name, &block)
@@ -182,10 +200,6 @@ class Fend
 
         def flat?
           errors.is_a?(Array)
-        end
-
-        def [](name)
-          @value.fetch(name, nil) if @value.respond_to?(:fetch)
         end
 
         def add_error(message)
