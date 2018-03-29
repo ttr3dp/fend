@@ -44,24 +44,11 @@ RSpec.describe Fend::Param do
     end
   end
 
-
   describe "#param" do
     it "validates nested param" do
       param.param(:test) { |test| test.add_error("invalid") }
 
       expect(param.errors).to eq(test: ["invalid"])
-    end
-  end
-
-  describe "#params" do
-    it "validates nested params" do
-      param.params(:foo, :bar, :baz) do |foo, bar, baz|
-        foo.add_error("invalid foo") unless foo.value.eql?(:bar)
-        bar.add_error("invalid bar")
-        baz.add_error("invalid baz")
-      end
-
-      expect(param.errors).to eq(bar: ["invalid bar"], baz: ["invalid baz"])
     end
   end
 

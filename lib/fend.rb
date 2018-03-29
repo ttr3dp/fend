@@ -147,19 +147,6 @@ class Fend
           _nest_errors(name, param.errors) if param.invalid?
         end
 
-        def params(*names, &block)
-          return if flat? && invalid?
-
-          params = names.each_with_object({}) do |name, result|
-            param = _build_param(self[name])
-            result[name] = param
-          end
-
-          yield(*params.values)
-
-          params.each { |name, param| _nest_errors(name, param.errors) if param.invalid? }
-        end
-
         def each(&block)
           return if (flat? && invalid?) || !@value.is_a?(Array)
 
