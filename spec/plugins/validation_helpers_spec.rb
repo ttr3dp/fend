@@ -3,7 +3,7 @@ require "ostruct"
 
 RSpec.shared_examples "validation helper that accepts custom error messsage" do |method_name, input_value, *args|
   it "uses specified message instead of default one" do
-    validation.validate { param(:test) { |t| t.public_send("validate_#{method_name}", *args, message: "custom message") } }
+    validation.validate { |i| i.param(:test) { |t| t.public_send("validate_#{method_name}", *args, message: "custom message") } }
     expect(errors(test: input_value)).to eq(["custom message"])
   end
 end
@@ -39,7 +39,7 @@ RSpec.describe "validation helpers plugin" do
   end
 
   describe "#absence" do
-    before { validation.validate { param(:test) { |test| test.validate_absence } } }
+    before { validation.validate { |i| i.param(:test) { |test| test.validate_absence } } }
 
     it_behaves_like("validation helper",
                     [nil, "", "   ", "\r", "\n", "\t", " \n\r\t ", [], {}, false, OpenStruct.new(empty?: true)],
@@ -50,7 +50,7 @@ RSpec.describe "validation helpers plugin" do
   end
 
   describe "#acceptance" do
-    before { validation.validate { param(:test) { |test| test.validate_acceptance } } }
+    before { validation.validate { |i| i.param(:test) { |test| test.validate_acceptance } } }
 
     it_behaves_like("validation helper",
                     [1, "1", true, "true", "TRUE", :yes, "YES", "yes"],
@@ -61,7 +61,7 @@ RSpec.describe "validation helpers plugin" do
 
     context "when :as option is passed" do
       it "checks if value matches the one/s passed as :as option" do
-        validation.validate { param(:test) { |t| t.validate_acceptance as: ["accepted", "accept"] } }
+        validation.validate { |i| i.param(:test) { |t| t.validate_acceptance as: ["accepted", "accept"] } }
 
         expect(errors(test: "accepted")).to be_nil
         expect(errors(test: "accept")).to be_nil
@@ -75,14 +75,14 @@ RSpec.describe "validation helpers plugin" do
   end
 
   describe "#validate_equality" do
-    before { validation.validate { param(:test) { |t| t.validate_equality "equal" } } }
+    before { validation.validate { |i| i.param(:test) { |t| t.validate_equality "equal" } } }
 
     it_behaves_like("validation helper", ["equal"], ["not equal"], "must be equal to 'equal'")
     it_behaves_like("validation helper that accepts custom error messsage", :equality, nil, "equal")
   end
 
   describe "#validate_exact_length" do
-    before { validation.validate { param(:test) { |t| t.validate_exact_length 4 } } }
+    before { validation.validate { |i| i.param(:test) { |t| t.validate_exact_length 4 } } }
 
     it_behaves_like("validation helper",
                     ["test", [1, 2, 3, 4], { one: 1, two: 2, three: 3, four: 4 }, OpenStruct.new(length: 4)],
@@ -93,7 +93,7 @@ RSpec.describe "validation helpers plugin" do
   end
 
   describe "#validate_exclusion" do
-    before { validation.validate { param(:test) { |t| t.validate_exclusion %w(test retest overtest) } } }
+    before { validation.validate { |i| i.param(:test) { |t| t.validate_exclusion %w(test retest overtest) } } }
 
     it_behaves_like("validation helper",
                     ["valid", "supervalid", "ubervalid"],
@@ -104,7 +104,7 @@ RSpec.describe "validation helpers plugin" do
   end
 
   describe "#validate_format" do
-    before { validation.validate { param(:test) { |t| t.validate_format(/\A[a-z0-9][-a-z0-9]{1,19}\z/i) } } }
+    before { validation.validate { |i| i.param(:test) { |t| t.validate_format(/\A[a-z0-9][-a-z0-9]{1,19}\z/i) } } }
 
     it_behaves_like("validation helper",
                     ["TeSt99", "99test", String.new.center(20, "A")],
@@ -115,14 +115,14 @@ RSpec.describe "validation helpers plugin" do
   end
 
   describe "#validate_greater_than" do
-    before { validation.validate { param(:test) { |t| t.validate_greater_than 4 } } }
+    before { validation.validate { |i| i.param(:test) { |t| t.validate_greater_than 4 } } }
 
     it_behaves_like("validation helper", [5, 5.5, 4.1], [2, 4, nil, "five", Object.new], "must be greater than 4")
     it_behaves_like("validation helper that accepts custom error messsage", :greater_than, nil, 4)
   end
 
   describe "#validate_greater_than_or_equal_to" do
-    before { validation.validate { param(:test) { |t| t.validate_gteq 4 } } }
+    before { validation.validate { |i| i.param(:test) { |t| t.validate_gteq 4 } } }
 
     it_behaves_like("validation helper", [4, 4.1, 5], [3.9, 3, nil, "five", Object.new], "must be greater than or equal to 4")
     it_behaves_like("validation helper that accepts custom error messsage", :gteq, nil, 4)
@@ -134,14 +134,14 @@ RSpec.describe "validation helpers plugin" do
   end
 
   describe "#validate_inclusion" do
-    before { validation.validate { param(:test) { |t| t.validate_inclusion %w(test retest overtest) } } }
+    before { validation.validate { |i| i.param(:test) { |t| t.validate_inclusion %w(test retest overtest) } } }
 
     it_behaves_like("validation helper", %w(test retest overtest), %w(nope no no\ way), "must be one of: test, retest, overtest")
     it_behaves_like("validation helper that accepts custom error messsage", :inclusion, nil, [1])
   end
 
   describe "#validate_length_range" do
-    before { validation.validate { param(:test) { |t| t.validate_length_range 3..5 } } }
+    before { validation.validate { |i| i.param(:test) { |t| t.validate_length_range 3..5 } } }
 
     it_behaves_like("validation helper",
                     ["foo", "test", [1, 2, 3, 4], { one: 1, two: 2, three: 3, four: 4, five: 5 }, OpenStruct.new(length: 4)],
@@ -152,14 +152,14 @@ RSpec.describe "validation helpers plugin" do
   end
 
   describe "#validate_less_than" do
-    before { validation.validate { param(:test) { |t| t.validate_less_than 4 } } }
+    before { validation.validate { |i| i.param(:test) { |t| t.validate_less_than 4 } } }
 
     it_behaves_like("validation helper", [3, 3.9], [5, 4.1, nil, "five", Object.new], "must be less than 4")
     it_behaves_like("validation helper that accepts custom error messsage", :less_than, nil, 3)
   end
 
   describe "#less_than_or_equal_to" do
-    before { validation.validate { param(:test) { |t| t.validate_lteq 4 } } }
+    before { validation.validate { |i| i.param(:test) { |t| t.validate_lteq 4 } } }
 
     it_behaves_like("validation helper", [4, 3.9, 3], [4.1, 5, nil, "five", Object.new], "must be less than or equal to 4")
     it_behaves_like("validation helper that accepts custom error messsage", :lteq, nil, 3)
@@ -171,7 +171,7 @@ RSpec.describe "validation helpers plugin" do
   end
 
   describe "#validate_max_length" do
-    before { validation.validate { param(:test) { |t| t.validate_max_length 4 } } }
+    before { validation.validate { |i| i.param(:test) { |t| t.validate_max_length 4 } } }
 
     it_behaves_like("validation helper",
                     ["test", "one", [1, 2, 3, 4], { one: 1, two: 2, three: 3, four: 4 }, OpenStruct.new(length: 3)],
@@ -182,7 +182,7 @@ RSpec.describe "validation helpers plugin" do
 
 
   describe "#min_length" do
-    before { validation.validate { param(:test) { |t| t.validate_min_length 4 } } }
+    before { validation.validate { |i| i.param(:test) { |t| t.validate_min_length 4 } } }
 
     it_behaves_like("validation helper",
                     ["test", "test1", [1, 2, 3, 4, 5], { one: 1, two: 2, three: 3, four: 4 }, OpenStruct.new(length: 5)],
@@ -192,7 +192,7 @@ RSpec.describe "validation helpers plugin" do
   end
 
   describe "#presence" do
-    before { validation.validate { param(:test) { |t| t.validate_presence } } }
+    before { validation.validate { |i| i.param(:test) { |t| t.validate_presence } } }
 
     it_behaves_like("validation helper",
                     [1, "test", " test     ", :test, Object.new, OpenStruct.new(empty?: false), [1, 2, 3], { one: 1 }, true],
@@ -205,33 +205,33 @@ RSpec.describe "validation helpers plugin" do
     describe "when value is of specified type" do
       it "does not append errors" do
         [:integer, :Integer, Integer, "integer", "Integer"].each do |type_ref|
-          validation.validate { param(:test) { |t| t.validate_type type_ref } }
+          validation.validate { |i| i.param(:test) { |t| t.validate_type type_ref } }
 
           expect(errors(test: 1)).to be_nil
         end
 
         [:string, :String, String, "string", "String"].each do |type_ref|
-          validation.validate { param(:test) { |t| t.validate_type type_ref } }
+          validation.validate { |i| i.param(:test) { |t| t.validate_type type_ref } }
 
           expect(errors(test: "1")).to be_nil
         end
 
         [:boolean, "boolean", "BOOL", "BOOLEAN"].each do |type_ref|
-          validation.validate { param(:test) { |t| t.validate_type type_ref } }
+          validation.validate { |i| i.param(:test) { |t| t.validate_type type_ref } }
 
           expect(errors(test: true)).to be_nil
           expect(errors(test: false)).to be_nil
         end
 
         [:decimal, :DECIMAL, "decimal", "DECIMAL"].each do |type_ref|
-          validation.validate { param(:test) { |t| t.validate_type type_ref } }
+          validation.validate { |i| i.param(:test) { |t| t.validate_type type_ref } }
 
           expect(errors(test: 1.1)).to be_nil
         end
 
         MyObject = Object
         [:my_object, :MyObject, "my_object", "MyObject", MyObject].each do |type_ref|
-          validation.validate { param(:test) { |t| t.validate_type type_ref } }
+          validation.validate { |i| i.param(:test) { |t| t.validate_type type_ref } }
 
           expect(errors(test: MyObject)).to be_nil
         end
@@ -241,7 +241,7 @@ RSpec.describe "validation helpers plugin" do
     describe "when value is invalid" do
       it "appends errors" do
         [:string, :String, String, "string", "String"].each do |type_ref|
-          validation.validate { param(:test) { |t| t.validate_type type_ref } }
+          validation.validate { |i| i.param(:test) { |t| t.validate_type type_ref } }
 
           expect(errors(test: nil)).to eq(["must be string"])
         end
@@ -259,23 +259,23 @@ RSpec.describe "validation helpers plugin" do
 
     let(:validation) do
       Class.new(Fend) do
-        validate do
-          param(:absence)                  { |p| p.validate_absence }
-          param(:acceptance)               { |p| p.validate_acceptance }
-          param(:equality)                 { |p| p.validate_equality "EQUAL" }
-          param(:exact_length)             { |p| p.validate_exact_length 1 }
-          param(:exclusion)                { |p| p.validate_exclusion ["NOPE"] }
-          param(:format)                   { |p| p.validate_format(/\A(valid)\z/i) }
-          param(:greater_than)             { |p| p.validate_greater_than 100 }
-          param(:greater_than_or_equal_to) { |p| p.validate_gteq 100 }
-          param(:inclusion)                { |p| p.validate_inclusion [true, false] }
-          param(:length_range)             { |p| p.validate_length_range 99..100 }
-          param(:less_than)                { |p| p.validate_less_than 2 }
-          param(:less_than_or_equal_to)    { |p| p.validate_lteq 2 }
-          param(:max_length)               { |p| p.validate_max_length 2 }
-          param(:min_length)               { |p| p.validate_min_length 100 }
-          param(:presence)                 { |p| p.validate_presence }
-          param(:type)                     { |p| p.validate_type :integer }
+        validate do |i|
+          i.param(:absence)                  { |p| p.validate_absence }
+          i.param(:acceptance)               { |p| p.validate_acceptance }
+          i.param(:equality)                 { |p| p.validate_equality "EQUAL" }
+          i.param(:exact_length)             { |p| p.validate_exact_length 1 }
+          i.param(:exclusion)                { |p| p.validate_exclusion ["NOPE"] }
+          i.param(:format)                   { |p| p.validate_format(/\A(valid)\z/i) }
+          i.param(:greater_than)             { |p| p.validate_greater_than 100 }
+          i.param(:greater_than_or_equal_to) { |p| p.validate_gteq 100 }
+          i.param(:inclusion)                { |p| p.validate_inclusion [true, false] }
+          i.param(:length_range)             { |p| p.validate_length_range 99..100 }
+          i.param(:less_than)                { |p| p.validate_less_than 2 }
+          i.param(:less_than_or_equal_to)    { |p| p.validate_lteq 2 }
+          i.param(:max_length)               { |p| p.validate_max_length 2 }
+          i.param(:min_length)               { |p| p.validate_min_length 100 }
+          i.param(:presence)                 { |p| p.validate_presence }
+          i.param(:type)                     { |p| p.validate_type :integer }
         end
       end
     end

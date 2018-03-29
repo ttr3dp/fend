@@ -2,7 +2,6 @@ require "spec_helper"
 
 require "ostruct"
 
-
 RSpec.shared_examples "strict type coercion" do |type, uncoercible_input|
   describe "strict_#{type} coercion" do
     before { setup_validation("strict_#{type}".to_sym, nil) }
@@ -30,8 +29,8 @@ RSpec.describe "coercions plugin" do
   def setup_validation(type, comparison_value)
     validation.coerce(test: type)
 
-    validation.validate do
-      param(:test) { |t| add_error("failed coercion") unless t.value == comparison_value }
+    validation.validate do |i|
+      i.param(:test) { |t| add_error("failed coercion") unless t.value == comparison_value }
     end
   end
 

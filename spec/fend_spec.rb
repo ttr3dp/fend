@@ -98,20 +98,20 @@ RSpec.describe "Fend" do
 
   describe "#call" do
     before do
-      validation_class.validate do |input|
-        param(:username) do |username|
+      validation_class.validate  do |i|
+        i.param(:username) do |username|
           username.add_error("must be present") if username.value.nil? || username.value == ''
         end
 
-        param(:age) do |age|
+        i.param(:age) do |age|
           age.add_error("must be integer") unless age.value.is_a?(Integer)
         end
 
-        param(:address) do |address|
+        i.param(:address) do |address|
           address.add_error("must be hash") unless address.value.is_a?(Hash)
         end
 
-        param(:interests) do |interests|
+        i.param(:interests) do |interests|
           interests.add_error("must be array") unless interests.value.is_a?(Array)
         end
       end
@@ -151,8 +151,8 @@ RSpec.describe "Fend" do
 
     context "when params are nested" do
       before do
-        validation_class.validate do |input|
-          param(:address) do |address|
+        validation_class.validate  do |i|
+          i.param(:address) do |address|
             address.add_error("must be hash") unless address.value.is_a?(Hash)
 
             address.param(:city) do |city|
@@ -171,7 +171,7 @@ RSpec.describe "Fend" do
             end
           end
 
-          param(:interests) do |interests|
+          i.param(:interests) do |interests|
             interests.add_error("must be array") unless interests.value.is_a?(Array)
 
             interests.each do |interest|

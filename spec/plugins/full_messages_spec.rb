@@ -5,17 +5,17 @@ RSpec.describe "full messages plugin" do
 
   it "prepends param name to error messages" do
     validation.validate do |i|
-      param(:username) do |username|
+      i.param(:username) do |username|
         username.add_error("must be present")
         username.add_error("must be string")
       end
 
-      param(:address) do |address|
+      i.param(:address) do |address|
         address.param(:city) { |city| city.add_error "must be present" }
         address.param(:street) { |street| street.add_error "must be present" }
       end
 
-      param(:tags) do |tags|
+      i.param(:tags) do |tags|
         tags.each { |tag| tag.add_error "must be string" }
       end
     end
@@ -41,7 +41,7 @@ RSpec.describe "full messages plugin" do
 
     it "uses specified names instead of array member index" do
       validation.validate do |i|
-        param(:tags) do |tags|
+        i.param(:tags) do |tags|
           tags.each { |tag| tag.add_error "must be string" }
         end
       end
@@ -53,7 +53,7 @@ RSpec.describe "full messages plugin" do
 
     it "skips key modification if param is not an array" do
       validation.validate do |i|
-        param(:tags) do |tags|
+        i.param(:tags) do |tags|
           tags.param(:foo) { |foo| foo.add_error "is invalid" }
         end
       end
