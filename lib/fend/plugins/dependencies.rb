@@ -8,13 +8,13 @@ class Fend
       end
 
       module ClassMethods
-        attr_reader :requested_dependencies
+        attr_reader :specified_dependencies
 
         def validate(opts = {}, &block)
           if opts.key?(:inject)
             raise ArgumentError, ":inject option value must be an array" unless opts[:inject].is_a?(Array)
 
-            @requested_dependencies = opts[:inject] unless opts[:inject].nil?
+            @specified_dependencies = opts[:inject] unless opts[:inject].nil?
           end
 
           super(&block)
@@ -27,9 +27,9 @@ class Fend
         end
 
         def validate
-          super if self.class.requested_dependencies.nil?
+          super if self.class.specified_dependencies.nil?
 
-          args = [@_root_param, *deps.values_at(*self.class.requested_dependencies)]
+          args = [@_root_param, *deps.values_at(*self.class.specified_dependencies)]
 
           @_root_param.instance_exec(*args, &validation_block)
         end
