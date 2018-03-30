@@ -3,7 +3,6 @@
 class Fend
   module Plugins
     module DataProcessing
-
       BUILT_IN_PROCESSINGS = {
         symbolize:   ->(data) { Process.symbolize_keys(data) },
         stringify:   ->(data) { Process.stringify_keys(data) },
