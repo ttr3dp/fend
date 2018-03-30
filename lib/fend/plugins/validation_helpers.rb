@@ -26,6 +26,10 @@ class Fend
     UNSUPPORTED_TYPE = "__unsupported_type__".freeze
 
     module ValidationHelpers
+      def self.load_dependencies(validation, *args, &block)
+        validation.plugin(:value_helpers)
+      end
+
       def self.configure(validation, opts = {})
         validation.opts[:validation_default_messages] = (validation.opts[:validation_default_messages] || {}).merge(opts[:default_messages] || {})
       end
@@ -132,75 +136,6 @@ class Fend
         def error_message(type, message, *args)
           message ||= self.class.default_messages.fetch(type)
           message.is_a?(String) ? message : message.call(*args)
-        end
-
-        def blank?
-          utils.blank?(value)
-        end
-
-        def present?
-          utils.present?(value)
-        end
-
-        def type_of?(type_ref)
-          utils.type_of?(value, type_ref)
-        end
-
-        def utils
-          Utils
-        end
-      end
-
-      class Utils
-        def self.blank?(object)
-          case object
-          when Array, Hash
-            object.empty?
-          when NilClass, FalseClass
-            true
-          when Integer, Float, Numeric, Time, TrueClass, Symbol
-            false
-          when String
-            empty_string?(object)
-          else
-            object.respond_to?(:empty?) ? !!object.empty? : !object
-          end
-        end
-
-        def self.empty_string?(object)
-          return false unless object.is_a?(String) || object.is_a?(Symbol)
-
-          /\A[[:space:]]*\z/.match?(object)
-        end
-
-        def self.present?(object)
-          !blank?(object)
-        end
-
-        def self.camelize(input)
-          input
-            .gsub(/\/(.?)/) { "::#{$1.upcase}" }
-            .gsub(/(?:\A|_)(.)/) { $1.upcase }
-        end
-
-        def self.constantize(input)
-          Object.const_get(input)
-        end
-
-        def self.type_of?(object, type_ref)
-          return object.is_a?(type_ref) unless type_ref.is_a?(String) || type_ref.is_a?(Symbol)
-
-          case type_ref.to_s
-          when /\A(bool|boolean)\z/i then !!object == object
-          when /\A(decimal)\z/i then object.is_a?(Float) || object.is_a?(BigDecimal)
-          when /\A(nil)\z/i then object.is_a?(NilClass)
-          else
-            object.is_a?(
-              constantize(
-                camelize(type_ref.to_s)
-              )
-            )
-          end
         end
       end
     end

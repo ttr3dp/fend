@@ -216,14 +216,14 @@ RSpec.describe "validation helpers plugin" do
           expect(errors(test: "1")).to be_nil
         end
 
-        [:boolean, "boolean", "BOOL", "BOOLEAN"].each do |type_ref|
+        [:boolean, "boolean"].each do |type_ref|
           validation.validate { |i| i.param(:test) { |t| t.validate_type type_ref } }
 
           expect(errors(test: true)).to be_nil
           expect(errors(test: false)).to be_nil
         end
 
-        [:decimal, :DECIMAL, "decimal", "DECIMAL"].each do |type_ref|
+        [:decimal, "decimal"].each do |type_ref|
           validation.validate { |i| i.param(:test) { |t| t.validate_type type_ref } }
 
           expect(errors(test: 1.1)).to be_nil
