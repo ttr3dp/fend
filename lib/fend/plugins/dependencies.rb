@@ -26,12 +26,12 @@ class Fend
           @_deps ||= self.class.opts[:dependencies]
         end
 
-        def validate
+        def validate(&block)
           super if self.class.specified_dependencies.nil?
 
-          args = [@_root_param, *deps.values_at(*self.class.specified_dependencies)]
+          dependencies = deps.values_at(*self.class.specified_dependencies)
 
-          @_root_param.instance_exec(*args, &validation_block)
+          yield(@_input_param, *dependencies) if block_given?
         end
       end
     end

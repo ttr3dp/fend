@@ -85,14 +85,14 @@ class Fend
           set_data(raw_data)
           validate(&validation_block)
 
-          result(input: @_input_data, output: @_output_data, errors: @_root_param.errors)
+          result(input: @_input_data, output: @_output_data, errors: @_input_param.errors)
         end
 
         def set_data(raw_data)
           @_raw_data    = raw_data
           @_input_data  = process_input(raw_data) || raw_data
           @_output_data = process_output(@_input_data) || @_input_data
-          @_root_param  = param_class.new(@_input_data)
+          @_input_param  = param_class.new(@_input_data)
         end
 
         def validation_block
@@ -112,7 +112,7 @@ class Fend
         def process_output(output); end
 
         def validate(&block)
-          yield(@_root_param) if block_given?
+          yield(@_input_param) if block_given?
         end
 
         def result(args)
