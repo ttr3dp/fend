@@ -5,7 +5,6 @@ class Fend
     DEFAULT_MESSAGES = {
       absence:                  -> { "must be absent" },
       acceptance:               -> { "must be accepted" },
-      confirmation:             -> { "must be confirmed" },
       equality:                 ->(value) { "must be equal to '#{value}'" },
       exact_length:             ->(length) { "length must be equal to #{length}" },
       exclusion:                ->(list) { "cannot be one of: #{list.join(', ')}" },
