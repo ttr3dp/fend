@@ -133,6 +133,8 @@ class Fend
           end
         end
 
+        private
+
         def error_message(type, message, *args)
           message ||= self.class.default_messages.fetch(type)
           message.is_a?(String) ? message : message.call(*args)

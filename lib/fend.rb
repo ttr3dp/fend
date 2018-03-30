@@ -167,21 +167,8 @@ class Fend
           !valid?
         end
 
-        def flat?
-          errors.is_a?(Array)
-        end
-
         def add_error(message)
           @errors << message
-        end
-
-        def _nest_errors(name, messages)
-          @errors = {} unless @errors.is_a?(Hash)
-          @errors[name] = messages
-        end
-
-        def _build_param(*args)
-          self.class.new(*args)
         end
 
         def inspect
@@ -194,6 +181,21 @@ class Fend
 
         def fend_class
           self.class::fend_class
+        end
+
+        private
+
+        def flat?
+          errors.is_a?(Array)
+        end
+
+        def _nest_errors(name, messages)
+          @errors = {} unless @errors.is_a?(Hash)
+          @errors[name] = messages
+        end
+
+        def _build_param(*args)
+          self.class.new(*args)
         end
       end
 
