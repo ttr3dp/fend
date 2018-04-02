@@ -23,7 +23,7 @@ class Fend
 
       module InstanceMethods
         def deps
-          @_deps ||= self.class.opts[:dependencies]
+          @_deps ||= self.class.opts[:dependencies].dup
         end
 
         def validate(&block)
