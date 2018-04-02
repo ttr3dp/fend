@@ -4,7 +4,6 @@ RSpec.shared_examples "validation options custom message" do |option_name, input
   it "accepts :message option" do
     validation.validate { |i| i.param(:test) { |t| t.validate(option_name => options.merge(message: "custom message")) } }
 
-
     expect(validation.call(test: input).messages).to eq(test: ["custom message"])
   end
 end
