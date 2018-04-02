@@ -305,4 +305,13 @@ RSpec.describe "validation options plugin" do
 
     end
   end
+
+  context "when option is invalid" do
+    it "raises error" do
+      validation.validate { |i| i.param(:test) { |t| t.validate(foo: true) } }
+
+      expect { validation.call({}) }.to raise_error(Fend::Error, "undefined validation method 'foo'")
+    end
+
+  end
 end
