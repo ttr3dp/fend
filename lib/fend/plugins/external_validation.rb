@@ -2,6 +2,65 @@
 
 class Fend
   module Plugins
+    # `external_validation` plugin allows you to delegate param validations to
+    # external classes/objects.
+    #
+    #     plugin :external_validation
+    #
+    # External validation class/object must respond to `call` method which takes param value
+    # as an argument and returns error messages either as an array or hash
+    # (nested data).
+    #
+    #     class CustomEmailValidator
+    #       def initialize
+    #         @errors = []
+    #       end
+    #
+    #       def call(email_value)
+    #         @errors << "must be string" unless email_value.is_a?(String)
+    #         @errors << "must be unique" unless unique?(email_value)
+    #
+    #         @errors
+    #       end
+    #
+    #       def unique?(value)
+    #         UniquenessCheck.call(value)
+    #       end
+    #     end
+    #
+    #     class AddressValidation < Fend
+    #       plugin :validation_options
+    #       plugin :collective_params
+    #
+    #       validate do |i|
+    #         i.params(:city, :street) do |city, street|
+    #           city.validate(type: String)
+    #           street.validate(type: String)
+    #         end
+    #       end
+    #     end
+    #
+    #     class UserValidation < Fend
+    #       plugin :external_validation
+    #       plugin :collective_params
+    #
+    #       validate do |i|
+    #         i.params(:email, :address) do |email, address|
+    #           email.validate_with(CustomEmailValidation.new)
+    #
+    #           address.validate_with(AddressValidation)
+    #         end
+    #       end
+    #     end
+    #
+    # `validation_options` plugin supports `external_validation`, which means
+    # that external validation can be specified like:
+    #
+    #     email.validate(with: CustomEmailValidation.new)
+    #
+    # You are free to combine internal and external validations any way you
+    # like. Using one doesn't mean you can't use the other.
+
     module ExternalValidation
       module ParamMethods
         def validate_with(validation)
