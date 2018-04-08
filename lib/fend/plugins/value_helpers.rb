@@ -23,7 +23,7 @@ class Fend
         # Returns `true` when:
         #
         # * `value.empty?`
-        # * `value.nil`
+        # * `value.nil?`
         # * `value == false`
         # * `value.empty_string?`
         def blank?
