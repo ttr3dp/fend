@@ -2,11 +2,52 @@
 
 class Fend
   module Plugins
+    # Instead of calling ValidationHelpers::ParamMethods separately,
+    # you can use `validation_options` plugin in order to specify all
+    # validations as options and pass them to `Param#validate` method.
+    #
+    #     plugin :validation_options
+    #
+    #     validate do |i|
+    #       i.param(:email) do |email|
+    #         email.validate(presence: true, type: String, format: EMAIL_REGEX)
+    #       end
+    #     end
+    #
+    # ## Custom error messages
+    #
+    # Custom error messages can be defined with `:message` option:
+    #
+    #     email.validate(presence: { message: "cannot be blank"})
+    #
+    # ## Mandatory arguments
+    #
+    # For ValidationHelpers::ParamMethods that expect mandatory arguments, there
+    # are predefined option keys that you can use. To see them all check
+    # MANDATORY_ARG_KEYS constant.
+    #
+    #     email.validate type: { of: String, message: "is not a string" }, format: { with: EMAIL_REGEX }
+    #     account_type.validate inclusion: { in: %w(admin, moderator) }
+    #
+    # You can also use the DEFAULT_ARG_KEY (`:value`) if you find it hard to
+    # remember the specific ones.
+    #
+    #     email.validate type: { value: String }, format: { value: EMAIL_REGEX }
+    #
+    # `validation_options` supports ExternalValidation plugin:
+    #
+    #     plugin :external_validation
+    #
+    #     # ...
+    #
+    #     email.validate(with: CustomEmailValidator)
     module ValidationOptions
       NO_ARG_METHODS = [:absence, :presence, :acceptance].freeze
       ARRAY_ARG_METHODS = [:exclusion, :inclusion, :length_range].freeze
 
       DEFAULT_ARG_KEY = :value
+
+      # List of keys to use when specifying mandatory validation arguments
       MANDATORY_ARG_KEYS = {
         equality:                 :value,
         exact_length:             :of,
@@ -25,6 +66,7 @@ class Fend
         type:                     :of
       }.freeze
 
+      # Depends on ValidationHelpers plugin
       def self.load_dependencies(validation, *args, &block)
         validation.plugin(:validation_helpers)
       end
