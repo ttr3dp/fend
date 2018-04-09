@@ -46,8 +46,7 @@ class Fend
     #
     # ## Built-in processings
     #
-    # `data_processing` plugin comes with some built-in processings that you can
-    # specify when loading the plugin:
+    # You can activate built-in processings when loading the plugin:
     #
     #     # this will:
     #     #   symbolize and freeze input data
@@ -67,7 +66,7 @@ class Fend
     # :freeze
     # : Freezes data
     #
-    # All of the specified processings support deeply nested data.
+    # All of the above support deeply nested data.
     #
     # Built-in processings are executed **before** any
     # user-defined ones.
@@ -80,20 +79,9 @@ class Fend
     #     UserValidation.call(raw_input)
     #
     # However, nothing can stop you from performing destructive operations
-    # (`merge!`, `delete`, etc...) in custom processing steps.
-    #
-    # If you intend to mutate the input data, please specify `:dup` built-in
-    # processing on `:input`. This is not needed if you already use some of the
-    # built-in processings, since they all return **new** data.
-    #
-    # The reason for this is that input is later used as the validation
-    # result output. This may lead to a situation when you mutate the output
-    # which can cause for result input to be changed also. Although a lot of
-    # things would need to align for this to happen, it's better to protect the
-    # data right away.
-    #
-    # If you want to ensure that no one will mutate the data, use
-    # `:freeze` processing.
+    # (`merge!`, `delete`, etc...) in custom processing steps. If you intend to
+    # mutate input/output data, make sure to use `:dup` processing, in order to
+    # ensure immutability.
     module DataProcessing
       BUILT_IN_PROCESSINGS = {
         symbolize:   ->(data) { Process.symbolize_keys(data) },
