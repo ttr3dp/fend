@@ -25,7 +25,7 @@ class Fend
   module Plugins
     @plugins = {}
 
-    # Use plugin if it's already loaded. If not, load it.
+    # Use plugin if already loaded. If not, load and return it.
     def self.load_plugin(name)
       unless plugin = @plugins[name]
         require "fend/plugins/#{name}"
@@ -212,7 +212,6 @@ class Fend
         def add_error(message)
           @errors << message
         end
-
 
         def inspect
           "#{fend_class.inspect}::Param #{super}"
