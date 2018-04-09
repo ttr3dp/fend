@@ -2,6 +2,98 @@
 
 class Fend
   module Plugins
+    # By default, Fend provides methods for input and output processing.
+    #
+    #     class UserValidation < Fend
+    #       #...
+    #
+    #       def process_input(input)
+    #         # symbolize input data keys
+    #         symbolized_input = input.each_with_object({}) do |(key, value), result|
+    #           new_key = key.is_a?(String) ? key.to_sym : key
+    #           result[new_key] = value
+    #         end
+    #
+    #         # do some additional processing
+    #       end
+    #
+    #       def process_output(output)
+    #         # filter output data
+    #         whitelist = [:username, :email, :address]
+    #         filtered_output = output.each_with_object({}) do |(key, value), result|
+    #           result[key] = value if whitelist.include?(key)
+    #         end
+    #
+    #         # do some additional processing
+    #       end
+    #     end
+    #
+    # `data_processing` plugin allows you to define processing steps in more
+    #  declarative manner:
+    #
+    #     plugin :data_processing
+    #
+    #     process(:input) do |input|
+    #       # symbolize keys
+    #     end
+    #
+    #     process(:output) do |output|
+    #       # filter
+    #     end
+    #
+    # You can define as much processing steps as you want and they will be
+    # executed in order in which they are defined.
+    #
+    # ## Built-in processings
+    #
+    # `data_processing` plugin comes with some built-in processings that you can
+    # specify when loading the plugin:
+    #
+    #     # this will:
+    #     #   symbolize and freeze input data
+    #     #   stringify output data
+    #     plugin :data_processing, input: [:symbolize, :freeze],
+    #                              output: [:stringify]
+    #
+    # :symbolize
+    # : Symbolizes keys.
+    #
+    # :stringify
+    # : Stringifies keys
+    #
+    # :dup
+    # : Duplicates data
+    #
+    # :freeze
+    # : Freezes data
+    #
+    # All of the specified processings support deeply nested data.
+    #
+    # Built-in processings are executed **before** any
+    # user-defined ones.
+    #
+    # ## Data mutation
+    #
+    # Fend will never mutate the raw input data you provide:
+    #
+    #     raw_input = { username: "john", email: "john@example.com" }
+    #     UserValidation.call(raw_input)
+    #
+    # However, nothing can stop you from performing destructive operations
+    # (`merge!`, `delete`, etc...) in custom processing steps.
+    #
+    # If you intend to mutate the input data, please specify `:dup` built-in
+    # processing on `:input`. This is not needed if you already use some of the
+    # built-in processings, since they all return **new** data.
+    #
+    # The reason for this is that input is later used as the validation
+    # result output. This may lead to a situation when you mutate the output
+    # which can cause for result input to be changed also. Although a lot of
+    # things would need to align for this to happen, it's better to protect the
+    # data right away.
+    #
+    # If you want to ensure that no one will mutate the data, use
+    # `:freeze` processing.
     module DataProcessing
       BUILT_IN_PROCESSINGS = {
         symbolize:   ->(data) { Process.symbolize_keys(data) },
