@@ -1,6 +1,6 @@
 # Fend
 
-Fend is a small and extensible Ruby validation toolkit.
+Fend is a small and extensible Ruby data validation toolkit.
 
 Some of the features include:
 
