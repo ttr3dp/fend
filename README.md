@@ -1,289 +1,369 @@
 # Fend
 
+Fend is a small and extensible Ruby validation toolkit.
+
+Some of the features include:
+
+* Helpers for common validation cases
+* Type coercion
+* Dependency management
+* Custom/external validation support
+* Data processing
+
+## Why?
+
+Let's be honest, data validation often tends to get messy and complex.
+Most of the time you'll find yourself adding validation logic to domain models
+and coming up with workarounds in order handle more complex cases.
+
+What I wanted to achieve was a library that doesn't do too much. Even better, a
+library that **does nothing**, but provide the tools for building custom
+validation logic.
+
 ## Installation
 
-Add this line to your application's Gemfile:
-
 ```ruby
-gem 'fend'
+# Gemfile
+gem "fend"
 ```
 
-And then execute:
+Or install system wide:
 
-    $ bundle
+    gem install fend
 
-Or install it yourself as:
+## Introduction
 
-    $ gem install fend
+We'll start with simple example(s) that show Fend's core functionalities. The
+implementation will later be improved through a series of refactoring steps,
+which will get you familiar with Fend's plugins.
 
+### Core functionalities
 
-## Core functionality
+By default, Fend doesn't do much. As the example below shows, it provides
+methods for specifying params, fetching their values and appending errors.
+All checks need to be implemented by yourself.
 
 ```ruby
 require "fend"
 
+# Create a validation class which inherits from `Fend`
 class UserValidation < Fend
-  validate do |i|
-    # Here, 'i' is a shorthand for input param
-    i.param(:name) do |name|
-      name.add_error("must be string") unless name.value.is_a?(String)
-    end
+  # define validation block
+  validation do |i|
+    # specify :username param that needs to be validated
+    i.param(:username) do |username|
+      # append error if username value is not string
+      username.add_error("must be string") unless username.value.is_a?(String)
 
-    i.param(:email) do |email|
-      email.add_error("is in invalid format") unless email.value.is_a?(String) && email.value.match?(EMAIL_REGEX)
-    end
-
-    i.param(:address) do |address|
-      address.add_error("must be a hash") unless address.value.is_a?(Hash)
-
-      address.param(:street) { |street| street.add_error("must be present") if street.value.nil? }
-    end
-
-    i.param(:profile) do |profile|
-      profile.param(:username) do |username|
-        username.add_error("cannot be longer than 10 characters") if username.value.length > 10
-      end
-
-      profile.param(:admin) do |admin|
-        admin.add_error("must be either true or false") unless [TrueClass, FalseClass].include?(admin.value)
-      end
-    end
-
-    i.param(:interests) do |interests|
-      interests.add_error("must be an array") unless interests.value.is_a?(Array)
-
-      interests.each do |interest|
-        interest.add_error("must be string") unless interest.value.is_a?(String)
-        interest.add_error("#{interest.value} is not a valid interest") unless ["cooking", "video games", "coding"].include?(interest.value)
-      end
+      username.valid? #=> false
+      username.invalid? #=> true
     end
   end
 end
+```
 
-result = UserValidation.call(
-  name:      :invalid,
-  email:     "",
-  address:   "not a hash",
-  profile:   { username: "too long username", admin: "1" },
-  interests: [1, "foo", "cooking"]
-)
+* `i` - represents validation input. It's actually an instance of
+        `Param` class, same as `username`.
 
+Let's run the validation:
+
+```ruby
+# run the validation and store the result
+result = UserValidation.call(username: 1234)
+
+# check if result is a success
 result.success? #=> false
+
+# check if result is failure
 result.failure? #=> true
 
-result.input  #=> { name: :invalid, email: "", address: "not a hash", profile: { username: "too long username", admin: "1" }, interests: [1, "foo", "cooking"] }
-result.output #=> { name: :invalid, email: "", address: "not a hash", profile: { username: "too long username", admin: "1" }, interests: [1, "foo", "cooking"] }
+# get validation input
+result.input #=> { username: 1234 }
 
-result.messages
-# {
-#  name: ["must be string"],
-#  email: ["is in invalid format"],
-#  address: ["must be a hash"],
-#  profile: { username: ["cannot be longer than 10 characters"], admin: ["must be boolean"] },
-#  interests: { 0 => ["must be string"], 1 => ["foo is not a valid interest"] }
-# }
+# get result output
+result.input #=> { username: 1234 }
+
+# get error messages
+result.messages #=> { username: ["must be string"] }
 ```
 
-As you can see, by default, `Fend` doesn't do much. Now, let's improve this implementation with some plugins.
+`result` is an instance of `Result` class.
 
-## Plugins
+#### Nested params
 
-### Validation helpers
-
-`:validation_helpers` plugin provides methods for common validations.
+Nested params are defined in a same way as regular params:
 
 ```ruby
-class UserValidation < Fend
-  plugin :validation_helpers
+i.param(:address) do |address|
+  address.add_error("must be hash") unless address.value.is_a?(Hash)
 
-  validate do |i|
-    i.param(:name) { |name| name.validate_type(String) }
+  address.param(:city) do |city|
+    city.add_error("must be string") unless city.value.is_a?(String)
+  end
 
-    i.param(:email) do |email|
-      email.validate_type(String)
-      email.validate_format(EMAIL_REGEX)
-    end
-
-    i.param(:address) do |address|
-      address.validate_type(Hash)
-
-      address.param(:street) { |street| street.validate_presence }
-    end
-
-    i.param(:profile) do |profile|
-      profile.param(:username) do |username|
-        username.validate_type(String)
-        username.validate_max_length(10)
-      end
-
-      profile.param(:admin) do { |admin| admin.validate_type(:boolean, message: "must be either true or false") }
-    end
-
-    i.param(:interests) do |interests|
-      interests.validate_type(Array)
-
-      interests.each do |interest|
-        interest.validate_type(String)
-        interest.validate_inclusion(["cooking", "video games", "coding"],
-                                    message: "#{interest.value} is not a valid interest")
-      end
-    end
+  address.param(:street) do |street|
+    street.add_error("must be string") unless street.value.is_a?(String)
   end
 end
 ```
 
-### Validation options
-
-Instead of calling validation helper methods separately, we can use `:validation_options` plugin in order to specify all validations as options.
+Let's execute the validation:
 
 ```ruby
-class UserValidation < Fend
-  # validation_options depends on validation_helpers plugin which will be loaded automatically
-  plugin :validation_options
+result = UserValidation.call(address: :invalid)
+result.failure? #=> true
+result.messages #=> { address: ["must be hash"] }
+```
 
-  validate do |i|
-    i.param(:name) { |name| name.validate(type: String) }
+As you can see, the nested param validations are **not** executed if parent param is
+invalid.
 
-    i.param(:email) { |email| email.validate(type: String, format: EMAIL_REGEX) }
+```ruby
+result = UserValidation.call(username: "test", address: {})
+result.messages #=> { address: { city: ["must be string"], street: ["must be string"] } }
+```
 
-    i.param(:address) do |address|
-      address.validate_type(Hash)
+#### Arrays
 
-      address.param(:street) { |street| street.validate_presence }
-    end
+Validating array members is done by passing a block to `Param#each` method:
 
-    i.param(:profile) do |profile|
-      profile.param(:username) { |username| username.validate(type: String, max_length: 10) }
-      profile.param(:admin) { |admin| admin.validate_type(:boolean, message: "must be either true or false") }
-    end
-
-    i.param(:interests) do |interests|
-      interests.validate_type(Array)
-
-      interests.each do |interest|
-        interest.validate(type: String, inclusion: { in: ["cooking", "video games", "coding"],
-                                                    message: "#{interest.value} is not a valid interest" })
-      end
-    end
+```ruby
+i.param(:tags) do |tags|
+  tags.each do |tag|
+    tag.add_error("must be string") unless tag.value.is_a?(String)
   end
 end
 ```
 
-### Collective params
-
-Specifying each param can be tedious in some/most cases. With `collective_params` plugin, this can be done more efficiently.
+Now, if we run the validation:
 
 ```ruby
-class UserValidation < Fend
-  plugin :validation_options
-  plugin :collective_params
+result = UserValidation.call(tags: [1, 2])
+result.messages #=> { tags: { 0 => ["must be string"], 1 => ["must be string"] } }
+```
 
-  validate do |i|
-    i.params(:name, :email, :address, :profile, :iterests) do |name, email, address, profile, interests|
-      name.validate(type: String)
+Needless to say, member validation won't be run if `tags` is not an array.
 
-      email.validate(type: String, format: EMAIL_REGEX)
+Fend also makes possible to validate specific array members, since `#each` method
+also provides an `index`:
 
-      address.validate(type: Hash)
-
-      address.params(:street, :city) do |street, city|
-        street.validate(presence: true, type: String)
-        city.validate(presence: true, type: String)
-      end
-
-      profile.params(:username, :admin) do |username, admin|
-        username.validate(type: String, max_length: 10)
-        admin.validate(type: { of: :boolean, message: "must be either true or false" })
-      end
-
-      interests.validate_type(Array)
-
-      interests.each do |interest|
-        interest.validate(type: String, inclusion: { in: ["cooking", "video games", "coding"],
-                                                     message: "#{interest.value} is not a valid interest" })
-      end
-    end
+```ruby
+tags.each do |tag, index|
+  if index == 0
+    tag.add_error("must be integer") unless tag.value.is_a?(Integer)
+  else
+    tag.add_error("must be string") unless tag.value.is_a?(String)
   end
 end
 ```
 
-### Coercions
+### Plugins overview
 
-`:coercions` plugin coerces input param values based on provided type schema. By default, uncoercible values are returned unmodified.
+#### Value helpers
+
+`value_helpers` plugin provides additional `Param` methods that can be used to
+check or fetch param values.
 
 ```ruby
-class UserValidation < Fend
-  # ...
+plugin :collective_params
 
-  plugin :coercions
+plugin :value_helpers
 
-  coerce name: :string,
-         email: :string,
-         address: { street: :string, city: :string },
-         profile: { username: :string, admin: :boolean },
-         interests: [:string]
+validate do |i|
+  i.params(:username, :details, :tags) do |username, details, tags|
+    username.present? #=> false
+    username.blank? #=> true
+    username.empty_string? #=> true
 
-  validate do |i|
-    # ...
+    details.type_of?(Hash) #=> true
+    details.dig(:address, :info, :coordinates, 0) #=> 35.6895
+
+    details.dig(:invalid_key, 0, :name) #=> nil
+
+    tags.dig(0, :id) #=> 1
+    tags.dig(1, :name) #=> "js"
   end
 end
 
-result = UserValidation.call(
-  name:      :invalid,
-  email:     "",
-  address:   "not a hash",
-  profile:   { username: 12345, admin: "1" },
-  interests: [1, "foo", :cooking]
+UserValidation.call(
+  username: "",
+  details: { address: { info: { coordinates: [35.6895, 139.6917] } } },
+  tags: [{ id: 1, name: "ruby"}, { id: 2, name: "js" }]
 )
-
-result.input #=> { name: :invalid, email: "", address: "not a hash", profile: { username: 12345, admin: "1" }, interests: [1, "foo", :cooking] }
-
-result.output #=> { name: "invalid", email: nil, address: "not a hash", profile: { username: "12345", admin: true }, interests: ["1", "foo", "cooking"] }
 ```
 
-### Dependencies
+#### Validation helpers
 
-`:dependencies` plugin provides a way to define and use dependencies in validation block.
+`validation_helpers` plugin provides methods for some common validation cases:
 
 ```ruby
-class UserValidation < Fend
-  # ...
-  plugin :validation_options
+plugin :validation_helpers
 
-  # here, user_class is globaly defined dependency which is available in child classes also.
-  plugin :dependencies, user_class: Models::User
+validation do |i|
+  i.param(:username) do |username|
+    username.validate_presence
+    username.validate_type(String)
+  end
 
-  validate(inject: [:user_class, :address_checker]) do |i, user_class, address_checker|
-    i.params(:email, :address) do |email, address|
-      email.validate(type: String, format: EMAIL_REGEX)
+  i.param(:address) do |address|
+    address.validate_type(Hash)
 
-      email.add_error("must be unique") if email.valid? && user_class.exists?(email: email.value)
-
-      address.params(:street, :city) do |street, city|
-        street.validate(type: String)
-        city.validate(type: String)
-      end
-
-      address.add_error("is not a real address") if address.valid? && !address_checker.real_address?(address.value)
+    address.param(:city) do |city|
+      city.validate_presence
+      city.validate_type(String)
     end
   end
 
-  def initialize(address_checker)
-    # deps is a local dependencies registry, provided by the plugin
-    deps[:address_checker] = address_checker
+  i.param(:tags) do |tags|
+    tags.validate_type(Array)
+    tags.validate_min_length(1)
+
+    tags.each do |tag|
+      tag.validate_type(String)
+      tag.validate_inclusion(%w(ruby js elixir), message: "#{tag.value} is not a valid tag")
+    end
+  end
+end
+```
+
+#### Validation options
+
+Instead of calling validation helpers separately, `validation_options` plugin
+can be used in order to specify all validations as options.
+
+```ruby
+plugin :validation_options
+
+validation do |i|
+  i.param(:username) { |username| username.validate(presence: true, type: String) }
+
+  i.param(:address) do |address|
+    address.validate_type(Hash)
+
+    address.param(:city) { |city| city.validate(presence: true, type: String) }
+  end
+
+  i.param(:tags) do |tags|
+    tags.validate(type: Array, min_length: 1)
+
+    tags.each do |tag|
+      tag.validate(type: String,
+                   inclusion: { in: %w(ruby js elixir), message: "#{tag.value} is not a valid tag" })
+    end
+  end
+end
+```
+
+#### Collective params
+
+Specifying params one by one can be tedious in some/most cases.
+With `collective_params` plugin, you can specify multiple params at once, by
+using `#params` method, instead of `#param`:
+
+```ruby
+plugin :validation_options
+plugin :collective_params
+
+validation do |i|
+  i.params(:username, :address, :tags) do |username, address, tags|
+    username.validate(presence: true, type: String)
+
+    address.validate_type(Hash)
+    address.params(:city, :street) do |street, city|
+      city.validate(presence: true, type: String) }
+      street.validate(presence: true, type: String)
+    end
+
+    tags.validate(type: Array, min_length: 1)
+    tags.each do |tag|
+      tag.validate(type: String,
+                   inclusion: { in: %w(ruby js elixir), message: "#{tag.value} is not a valid tag" })
+    end
+  end
+end
+```
+
+#### Dependencies
+
+`dependencies` plugin enables you to register and resolve dependencies.
+
+There are two types of dependencies:
+
+1. Inheritable - Available in subclasses also
+2. Local - registered under a key in `deps` registry. Available only in current
+class
+
+To resolve dependencies, pass `:inject` option with dependency list
+to `.validate` method:
+
+```ruby
+plugin :collective_params
+plugin :validation_options
+
+plugin :dependencies, user_model: User
+
+validate(inject: [:user_model, :context]) do |i, user_model, context|
+
+  i.params(:email, :password, :password_confirmation) do |email, password, password_confirmation|
+
+    email.add_error("not found") if email.present? && !user_model.exists?(email: email.value)
+
+    if context == :password_change
+      password.validate(type: String, min_length: 6)
+      if password.valid?
+        password.add_error("must be confirmed") unless password.value == password_confirmation.value
+      end
+    end
   end
 end
 
-user_validation = UserValidation.new(AddressChecker.new)
-
-result = user_validation.call(email: "existing@email.com", address: { street: "Elm street", city: "Matrix" })
-
-result.messages #=> { email: ["must be unique"], address: ["is not a real address"] }
+def initialize(context)
+  deps[:context] = context
+end
 ```
 
-### External validation
+Here, `:user_model` is an inheritable dependency, while `:context` is local.
 
-`:external_validation` plugin provides a way to delegate param validations to a class/object that responds to `call` method and returns error messages hash/array.
+As you can see, we're expecting for `context` to be passed in the initializer:
+
+```ruby
+result = UserValidation.new(:password_change).call(email: "foo@bar.com", password: :invalid)
+
+result.messages #=> { email: ["not found"], password: ["must be string", "must be confirmed"] }
+```
+
+#### Coercions
+
+`coercions` plugin coerces input param values based on provided type schema.
+By default, uncoercible values are returned unmodified.
+
+```ruby
+plugin :collective_params
+
+plugin :coercions
+
+coerce username: :string,
+       address: { street: :string, city: :string },
+       tags: [:string]
+
+validate do |i|
+  i.params(:username, :address, :tags) do |username, address, tags|
+    username.value #=> "foobar"
+    address.value  #=> {}
+    tags.value     #=> ["1", "foo", "cooking"]
+  end
+end
+
+result = UserValidation.call(username: :foobar, address: "", tags: [1, "foo", :cooking])
+
+result.input  #=> { username: :foobar, address: "", tags: [1, "foo", :cooking] }
+result.output #=> { username: "foobar", address: {}, tags: ["1", "foo", "cooking"] }
+```
+
+#### External validation
+
+With `external_validation` plugin param validations can be delegated to
+class/object that responds to `call` and returns error messages.
 
 ```ruby
 class CustomEmailValidator
@@ -329,57 +409,35 @@ class UserValidation < Fend
 end
 ```
 
-`validation_options` plugin supports `external_validation` which means you can do:
+#### Full messages
 
-```ruby
- plugin :validation_options
- plugin :external_validation
-
- email.validate(with: CustomEmailValidation.new)
- address.validate(with: AddressValidation)
-```
-
-### Full messages
-
-As the name says, `full_messages` provides error messages with prepended param name.
+`full_messages` plugin defines `Result#full_messages` method which returns
+error messages with prepended param name
 
 ```ruby
 class UserValidation < Fend
-  plugin :full_messages
+  plugin :full_messages, array_member_names: { tags: :tag }
 
   # ...
 end
-result = UserValidation.call(email: "invalid", profile: "invalid", address: { })
+
+result = UserValidation.call(username: nil, address: {}, tags: [1])
 
 result.full_messages
-#=> { email: ["email is in invalid format"], profile: ["profile must be hash"], address: { city: ["city must be string"] } }
+# {
+#   username: ["username must be present"],
+#   address: { city: ["city must be string"] },
+#   tags: { 0 => ["tag must be string"] }
+# }
 ```
-
-#### Array member support
-
-When validating array elements, messages are returned as:
-
-```ruby
-tags: { 0 => ["0 must be string"] }
-```
-
-In order to make full messages nicer for array elements, pass an option when specifying the plugin, like so:
-
-```ruby
-plugin :full_messages, array_member_names: { tags: :tag }
-```
-
-Now full messages will look like this:
-
-```ruby
-tags: { 0 => ["tag must be string"] }
-```
-
 
 ## Code of Conduct
 
-Everyone interacting in the Fend project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/aradunovic/fend/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the Fend project’s codebases, issue trackers, chat rooms
+and mailing lists is expected to follow the
+[code of conduct](https://github.com/aradunovic/fend/blob/master/CODE_OF_CONDUCT.md).
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+The gem is available as open source under the terms of the
+[MIT License](https://opensource.org/licenses/MIT).
