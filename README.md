@@ -115,8 +115,8 @@ result.failure? #=> true
 result.messages #=> { address: ["must be hash"] }
 ```
 
-As you can see, the nested param validations are **not** executed if parent param is
-invalid.
+As you can see, the nested param validations are **not** executed if
+parent param is invalid.
 
 ```ruby
 result = UserValidation.call(username: "test", address: {})
@@ -281,6 +281,48 @@ validation do |i|
     end
   end
 end
+```
+
+#### Data processing
+
+With `data_processing` plugin you can process input/output data.
+
+You can use some of the built-in processings, like `:symbolize`, for example:
+
+```ruby
+class UserValidation < Fend
+  plugin :data_processing, input: [:symbolize]
+
+  # ...
+end
+
+UserValidation.call("username" => "john", email: "john@example.com", "admin" => true)
+```
+
+You can define custom processings:
+
+```ruby
+class UserValidation < Fend
+  plugin :data_processing
+
+  process(:input) do |input|
+    input.merge(foo: "foo")
+  end
+
+  process(:output) do |output|
+    output.merge(timestamp: Time.now.utc)
+  end
+
+  validate do |i|
+    i.param(:username) { |username| username.value #=> "john" }
+    i.param(:foo) { |foo| foo.value #=> "foo" }
+  end
+end
+
+result = UserValidation.call(username: "john")
+
+result.input #=> { username: "john" }
+result.output #=> { username: "john", timestamp: 2018-01-01 00:00:00 UTC }
 ```
 
 #### Dependencies
