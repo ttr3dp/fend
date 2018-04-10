@@ -10,6 +10,27 @@ Some of the features include:
 * Custom/external validation support
 * Data processing
 
+## Table of contents
+
+* [**Why?**](#why)
+* [**Installation**](#installation)
+* [**Introduction**](#introduction)
+  * [Core functionalities](#core-functionalities)
+  * [Nested params](#nested-params)
+  * [Arrays](#arrays)
+* [**Plugins overview**](#plugins-overview)
+  * [Value helpers](#value-helpers)
+  * [Validation helpers](#validation-helpers)
+  * [Validation options](#validation-options)
+  * [Collective params](#collective-params)
+  * [Data processing](#data-processing)
+  * [Dependencies](#dependencies)
+  * [Coercions](#coercions)
+  * [External validation](#external-validation)
+  * [Full messages](#full-messages)
+* [**Code of Conduct**](#code-of-conduct)
+* [**License**](#license)
+
 ## Why?
 
 Let's be honest, data validation often tends to get messy and complex.
@@ -89,7 +110,7 @@ result.messages #=> { username: ["must be string"] }
 
 `result` is an instance of `Result` class.
 
-#### Nested params
+### Nested params
 
 Nested params are defined in a same way as regular params:
 
@@ -123,7 +144,7 @@ result = UserValidation.call(username: "test", address: {})
 result.messages #=> { address: { city: ["must be string"], street: ["must be string"] } }
 ```
 
-#### Arrays
+### Arrays
 
 Validating array members is done by passing a block to `Param#each` method:
 
@@ -157,9 +178,9 @@ tags.each do |tag, index|
 end
 ```
 
-### Plugins overview
+## Plugins overview
 
-#### Value helpers
+### Value helpers
 
 `value_helpers` plugin provides additional `Param` methods that can be used to
 check or fetch param values.
@@ -192,7 +213,7 @@ UserValidation.call(
 )
 ```
 
-#### Validation helpers
+### Validation helpers
 
 `validation_helpers` plugin provides methods for some common validation cases:
 
@@ -226,7 +247,7 @@ validation do |i|
 end
 ```
 
-#### Validation options
+### Validation options
 
 Instead of calling validation helpers separately, `validation_options` plugin
 can be used in order to specify all validations as options.
@@ -254,7 +275,7 @@ validation do |i|
 end
 ```
 
-#### Collective params
+### Collective params
 
 Specifying params one by one can be tedious in some/most cases.
 With `collective_params` plugin, you can specify multiple params at once, by
@@ -283,7 +304,7 @@ validation do |i|
 end
 ```
 
-#### Data processing
+### Data processing
 
 With `data_processing` plugin you can process input/output data.
 
@@ -325,7 +346,7 @@ result.input #=> { username: "john" }
 result.output #=> { username: "john", timestamp: 2018-01-01 00:00:00 UTC }
 ```
 
-#### Dependencies
+### Dependencies
 
 `dependencies` plugin enables you to register and resolve dependencies.
 
@@ -374,7 +395,7 @@ result = UserValidation.new(:password_change).call(email: "foo@bar.com", passwor
 result.messages #=> { email: ["not found"], password: ["must be string", "must be confirmed"] }
 ```
 
-#### Coercions
+### Coercions
 
 `coercions` plugin coerces input param values based on provided type schema.
 By default, uncoercible values are returned unmodified.
@@ -402,7 +423,7 @@ result.input  #=> { username: :foobar, address: "", tags: [1, "foo", :cooking] }
 result.output #=> { username: "foobar", address: {}, tags: ["1", "foo", "cooking"] }
 ```
 
-#### External validation
+### External validation
 
 With `external_validation` plugin param validations can be delegated to
 class/object that responds to `call` and returns error messages.
@@ -451,7 +472,7 @@ class UserValidation < Fend
 end
 ```
 
-#### Full messages
+### Full messages
 
 `full_messages` plugin defines `Result#full_messages` method which returns
 error messages with prepended param name
