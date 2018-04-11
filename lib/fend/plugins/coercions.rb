@@ -422,7 +422,7 @@ class Fend
         def empty_string?(input)
           return false unless input.is_a?(String) || input.is_a?(Symbol)
 
-          /\A[[:space:]]*\z/.match?(input)
+          !(/\A[[:space:]]*\z/.match(input).nil?)
         end
 
         def fend_class
