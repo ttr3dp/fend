@@ -13,8 +13,12 @@ rvm:
   - jruby-9.1.15.0
   - jruby-head
 
-before_install: gem install bundler
+before_install:
+  - gem install bundler
+
+matrix:
+  allow_failures:
+    - rvm: ruby-head
+    - rvm: jruby-head
 
 script: bundle exec rake spec
-
-cache: bundler
