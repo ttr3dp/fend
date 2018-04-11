@@ -126,7 +126,7 @@ class Fend
         #
         #     name.validate_format(/\A[a-z]\z/i)
         def validate_format(format, opts = {})
-          add_error(:format, opts[:message]) unless format.match?(value.to_s)
+          add_error(:format, opts[:message]) if format.match(value.to_s).nil?
         end
 
         # Validates that param value is greater than specified value

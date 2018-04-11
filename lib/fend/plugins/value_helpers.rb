@@ -85,7 +85,9 @@ class Fend
         def empty_string?
           return false unless value.is_a?(String) || value.is_a?(Symbol)
 
-          /\A[[:space:]]*\z/.match?(value)
+          regex = /\A[[:space:]]*\z/
+
+          !regex.match(value).nil?
         end
 
         # Returns `true` if value is present/not blank
