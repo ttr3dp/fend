@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.authors       = ["Aleksandar Radunovic"]
   gem.email         = ["aleksandar@radunovic.io"]
 
-  gem.summary       = "Param validation toolkit"
+  gem.summary       = "Small and extensible data validation toolkit"
   gem.description   = gem.summary
   gem.homepage      = "https://fend.radunovic.io"
   gem.license       = "MIT"
