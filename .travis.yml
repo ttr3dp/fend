@@ -1,6 +1,6 @@
 language: ruby
 
-sudo: false
+sudo: required
 
 rvm:
   - 2.0
@@ -14,7 +14,6 @@ rvm:
   - jruby-head
 
 before_install:
-  - gem update --system
   - gem install bundler
 
 matrix:
@@ -22,6 +21,6 @@ matrix:
     - rvm: ruby-head
     - rvm: jruby-head
 
-script: bundle exec rake spec
+script: bundle exec rake
 
 cache: bundler
