@@ -284,7 +284,7 @@ RSpec.describe "validation helpers plugin" do
       validation.plugin :validation_helpers, default_messages: messages
 
       input    = helpers.each_with_object({}) { |key, result| result[key] = key == :presence ? nil : "NOPE" }
-      expected = messages.transform_values(&method(:Array))
+      expected = messages.each_with_object({}) { |(k, v), result| result[k] = [v] }
 
       expect(validation.call(input).messages).to eq(expected)
     end
