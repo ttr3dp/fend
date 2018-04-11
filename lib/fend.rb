@@ -65,19 +65,19 @@ class Fend
         end
 
         def plugin(plugin, *args, &block)
-          plugin = Plugins.load_plugin(plugin)            if plugin.is_a?(Symbol)
-          plugin.load_dependencies(self, *args, &block)   if plugin.respond_to?(:load_dependencies)
+          plugin = Plugins.load_plugin(plugin) if plugin.is_a?(Symbol)
+          plugin.load_dependencies(self, *args, &block) if plugin.respond_to?(:load_dependencies)
 
-          self.include(plugin::InstanceMethods)           if defined?(plugin::InstanceMethods)
-          self.extend(plugin::ClassMethods)               if defined?(plugin::ClassMethods)
+          include(plugin::InstanceMethods) if defined?(plugin::InstanceMethods)
+          extend(plugin::ClassMethods) if defined?(plugin::ClassMethods)
 
-          self::Param.include(plugin::ParamMethods)       if defined?(plugin::ParamMethods)
-          self::Param.extend(plugin::ParamClassMethods)   if defined?(plugin::ParamClassMethods)
+          self::Param.send(:include, plugin::ParamMethods) if defined?(plugin::ParamMethods)
+          self::Param.extend(plugin::ParamClassMethods) if defined?(plugin::ParamClassMethods)
 
-          self::Result.include(plugin::ResultMethods)     if defined?(plugin::ResultMethods)
+          self::Result.send(:include, plugin::ResultMethods) if defined?(plugin::ResultMethods)
           self::Result.extend(plugin::ResultClassMethods) if defined?(plugin::ResultClassMethods)
 
-          plugin.configure(self, *args, &block)           if plugin.respond_to?(:configure)
+          plugin.configure(self, *args, &block) if plugin.respond_to?(:configure)
 
           plugin
         end
