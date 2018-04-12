@@ -1,4 +1,4 @@
-# Fend
+# Fend [![Build Status](https://travis-ci.org/aradunovic/fend.svg?branch=master)](https://travis-ci.org/aradunovic/fend)
 
 Fend is a small and extensible Ruby data validation toolkit.
 
