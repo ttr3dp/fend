@@ -370,17 +370,23 @@ class Fend
         def to_date(input)
           return if empty_string?(input)
 
+          raise ArgumentError unless input.respond_to?(:to_str)
+
           ::Date.parse(input)
         end
 
         def to_date_time(input)
           return if empty_string?(input)
 
+          raise ArgumentError unless input.respond_to?(:to_str)
+
           ::DateTime.parse(input)
         end
 
         def to_time(input)
           return if empty_string?(input)
+
+          raise ArgumentError unless input.respond_to?(:to_str)
 
           ::Time.parse(input)
         end

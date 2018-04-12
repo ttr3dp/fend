@@ -1,6 +1,7 @@
 require "spec_helper"
 
 require "ostruct"
+require "date"
 
 RSpec.shared_examples "strict type coercion" do |type, uncoercible_input|
   describe "strict_#{type} coercion" do
@@ -29,7 +30,7 @@ RSpec.describe "coercions plugin" do
     validation.coerce(test: type)
 
     validation.validate do |i|
-      i.param(:test) { |t| add_error("failed coercion") unless t.value == comparison_value }
+      i.param(:test) { |t| t.add_error("failed coercion") unless t.value == comparison_value }
     end
   end
 
@@ -194,7 +195,7 @@ RSpec.describe "coercions plugin" do
     it "coerces value with Date.parse" do
       allow(Date).to receive(:parse).and_return("DATE_INVOKED")
       setup_validation(:date, "DATE_INVOKED")
-      expect_validation_success(test: Object.new)
+      expect_validation_success(test: "foo")
     end
 
     describe "when input is uncoercible" do
@@ -211,7 +212,7 @@ RSpec.describe "coercions plugin" do
     it "coerces value with DateTime.parse" do
       allow(DateTime).to receive(:parse).and_return("DATE_TIME_INVOKED")
       setup_validation(:date_time, "DATE_TIME_INVOKED")
-      expect_validation_success(test: Object.new)
+      expect_validation_success(test: "foo")
     end
 
     describe "when input is uncoercible" do
@@ -228,7 +229,7 @@ RSpec.describe "coercions plugin" do
     it "coerces value with Time.parse" do
       allow(Time).to receive(:parse).and_return("TIME_INVOKED")
       setup_validation(:time, "TIME_INVOKED")
-      expect_validation_success(test: Object.new)
+      expect_validation_success(test: "foo")
     end
 
     describe "when input is uncoercible" do
