@@ -10,7 +10,7 @@ Some of the features include:
 * Custom/external validation support
 * Data processing
 
-## Table of contents
+## Contents
 
 * [**Why?**](#why)
 * [**Installation**](#installation)
