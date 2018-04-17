@@ -1,0 +1,123 @@
+body {
+  background: #1a1a1a;
+  color: #dedede;
+  font-family: "Saira Semi Condensed", sans-serif;
+}
+
+a {
+  color: #c679d2;
+}
+
+a:hover {
+  color: #b07bdb;
+}
+
+.logo {
+  margin-top: 3em;
+}
+
+#version {
+  font-family: "Inconsolata", monospace;
+  font-size: 20px;
+  margin-top: 2em;
+  font-weight: 700;
+  color: #0b97ac;
+}
+
+#fend-desc {
+  padding: 4em;
+}
+
+.section-title {
+  color: #dedede;
+}
+
+.divider {
+  background-color: #dedede;
+}
+
+.section-item-name {
+  color: #c679d2;
+  font-size: 18px;
+  font-weight: 400;
+  font-family: "Inconsolata", monospace;
+}
+
+.section-item a:hover {
+  color: #b07bdb;
+  font-weight: 400;
+}
+
+.card {
+  background-color: #1a1a1a;
+}
+
+nav {
+  box-shadow: 0 1px 3px 0 rgba(0,0,0,.21);
+}
+
+.group-name {
+  margin-top: 1em;
+}
+
+.description {
+  padding: 6em 0;
+}
+
+.description-item {
+  padding: 3em;
+}
+
+.description-item .icon {
+  margin-bottom: 1.4em;
+}
+
+.description-item .info {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.list-group-item {
+  background: none;
+}
+
+.list-group-item-action:focus, .list-group-item-action:hover {
+  background-color: #2c3237;
+}
+
+.documentation-title {
+  margin: 2em 0;
+}
+
+.footer {
+  margin-top: 4em;
+  font-size: 12px;
+  color: #999999;
+}
+
+.github-corner:hover .octo-arm {
+  animation:octocat-wave 560ms ease-in-out
+}
+
+@keyframes octocat-wave {
+  0%,100% {
+    transform:rotate(0)
+  }
+  20%,60% {
+    transform:rotate(-25deg)
+  }
+  40%,80% {
+    transform:rotate(10deg)
+  }
+}
+
+@media (max-width:500px) {
+  .github-corner:hover .octo-arm {
+    animation:none
+  }
+
+  .github-corner .octo-arm {
+    animation:octocat-wave 560ms ease-in-out
+  }
+}
+

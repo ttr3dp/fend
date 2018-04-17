@@ -1,0 +1,15 @@
+title: Fend
+description: Ruby data validation toolkit.
+baseurl: ""
+url: fend.radunovic.io
+markdown: kramdown
+destination: build
+exclude:
+  - Gemfile
+  - Gemfile.lock
+defaults:
+  -
+    scope:
+      type: pages
+    values:
+      layout: default

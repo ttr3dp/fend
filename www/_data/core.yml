@@ -1,0 +1,12 @@
+-
+  name: Fend (ClassMethods)
+  path: Plugins/Core/ClassMethods.html
+-
+  name: Fend (InstanceMethods)
+  path: Plugins/Core/InstanceMethods.html
+-
+  name: Fend::Param
+  path: Plugins/Core/ParamMethods.html
+-
+  name: Fend::Result
+  path: Plugins/Core/ResultMethods.html
