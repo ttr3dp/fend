@@ -17,7 +17,7 @@ class Fend
     #
     # ## Array members
     #
-    # When validating array elements, messages will be returned with prependend
+    # When validating array elements, messages are returned with prependend
     # index, since array members don't have a name.
     #
     #      { tags: { 0 => ["0 must be string"] } }

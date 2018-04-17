@@ -9,7 +9,7 @@ require "time"
 class Fend
   module Plugins
     # `coercions` plugin provides a way to coerce validaiton input.
-    # First, plugin needs to be loaded
+    # First, the plugin needs to be loaded
     #
     #     plugin :coercions
     #
@@ -104,7 +104,7 @@ class Fend
     # ## Strict coercions
     #
     # Adding `strict_` prefix to type name will cause error to be raised
-    # when input is uncoercible:
+    # when input is incoercible:
     #
     #     coerce username: :strict_string
     #
@@ -114,7 +114,7 @@ class Fend
     # Custom error message can be defined by setting `:strict_error_message`
     # option when loading the plugin:
     #
-    #     plugin :coercions, strict_error_message: "Uncoercible input encountered"
+    #     plugin :coercions, strict_error_message: "Incoercible input encountered"
     #
     #     # or
     #
@@ -137,7 +137,7 @@ class Fend
     #       end
     #     end
     #
-    # ### Handling uncoercible input
+    # ### Handling incoercible input
     #
     # If input value cannot be coerced, either `ArgumentError` or `TypeError`
     # should be raised.

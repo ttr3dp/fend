@@ -41,7 +41,7 @@ class Fend
     #       # filter
     #     end
     #
-    # You can define as much processing steps as you want and they will be
+    # You can define as much processing steps as you need and they will be
     # executed in order in which they are defined.
     #
     # ## Built-in processings

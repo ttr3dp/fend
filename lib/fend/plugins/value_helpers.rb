@@ -4,7 +4,7 @@ require "bigdecimal"
 
 class Fend
   module Plugins
-    # `value_helpers` plugin provides helper methods that you can use to
+    # `value_helpers` plugin provides helper methods you can use to
     # check/fetch param values.
     #
     #     plugin :value_helpers

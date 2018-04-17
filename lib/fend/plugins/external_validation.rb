@@ -7,7 +7,7 @@ class Fend
     #
     #     plugin :external_validation
     #
-    # External validation class/object must respond to `call` method which takes param value
+    # External validation must respond to `call` method that takes param value
     # as an argument and returns error messages either as an array or hash
     # (nested data).
     #
@@ -53,8 +53,7 @@ class Fend
     #       end
     #     end
     #
-    # `validation_options` plugin supports `external_validation`, which means
-    # that external validation can be specified like:
+    # `validation_options` plugin supports `external_validation`:
     #
     #     email.validate(with: CustomEmailValidation.new)
     #
