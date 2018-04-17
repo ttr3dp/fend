@@ -2,7 +2,7 @@
 
 Fend is a small and extensible Ruby data validation toolkit.
 
-Some of the features include:
+Features:
 
 * Helpers for common validation cases
 * Type coercion
@@ -37,7 +37,7 @@ Let's be honest, data validation often tends to get messy and complex.
 Most of the time you'll find yourself adding validation logic to domain models
 and coming up with workarounds in order handle more complex cases.
 
-What I wanted to achieve was a library that doesn't do too much. Even better, a
+What I wanted to make was a library that doesn't do too much. Even better, a
 library that **does nothing**, but provide the tools for building custom
 validation logic.
 
@@ -54,7 +54,7 @@ Or install system wide:
 
 ## Introduction
 
-We'll start with simple example(s) that show Fend's core functionalities. The
+We'll start with a simple example that show Fend's core functionalities. The
 implementation will later be improved through a series of refactoring steps,
 which will get you familiar with Fend's plugins.
 
@@ -112,7 +112,7 @@ result.messages #=> { username: ["must be string"] }
 
 ### Nested params
 
-Nested params are defined in a same way as regular params:
+Nested params are defined in the same way as regular params:
 
 ```ruby
 i.param(:address) do |address|
@@ -136,7 +136,7 @@ result.failure? #=> true
 result.messages #=> { address: ["must be hash"] }
 ```
 
-As you can see, the nested param validations are **not** executed if
+As you can see, nested param validations are **not** executed when
 parent param is invalid.
 
 ```ruby
@@ -165,7 +165,7 @@ result.messages #=> { tags: { 0 => ["must be string"], 1 => ["must be string"] }
 
 Needless to say, member validation won't be run if `tags` is not an array.
 
-Fend also makes possible to validate specific array members, since `#each` method
+Fend makes it possible to validate specific array members, since `#each` method
 also provides an `index`:
 
 ```ruby
@@ -182,7 +182,7 @@ end
 
 ### Value helpers
 
-`value_helpers` plugin provides additional `Param` methods that can be used to
+The `value_helpers` plugin provides additional `Param` methods that can be used to
 check or fetch param values.
 
 ```ruby
@@ -215,7 +215,7 @@ UserValidation.call(
 
 ### Validation helpers
 
-`validation_helpers` plugin provides methods for some common validation cases:
+The `validation_helpers` plugin provides methods for some common validation cases:
 
 ```ruby
 plugin :validation_helpers
@@ -348,12 +348,12 @@ result.output #=> { username: "john", timestamp: 2018-01-01 00:00:00 UTC }
 
 ### Dependencies
 
-`dependencies` plugin enables you to register and resolve dependencies.
+The `dependencies` plugin enables you to register and resolve dependencies.
 
 There are two types of dependencies:
 
 1. Inheritable - Available in subclasses also
-2. Local - registered under a key in `deps` registry. Available only in current
+2. Local - registered under a key in `deps` registry. Available only in the current
 class
 
 To resolve dependencies, pass `:inject` option with dependency list
@@ -398,7 +398,7 @@ result.messages #=> { email: ["not found"], password: ["must be string", "must b
 ### Coercions
 
 `coercions` plugin coerces input param values based on provided type schema.
-By default, uncoercible values are returned unmodified.
+By default, incoercible values are returned unmodified.
 
 ```ruby
 plugin :collective_params
@@ -425,7 +425,7 @@ result.output #=> { username: "foobar", address: {}, tags: ["1", "foo", "cooking
 
 ### External validation
 
-With `external_validation` plugin param validations can be delegated to
+With `external_validation` plugin param validations can be delegated to a
 class/object that responds to `call` and returns error messages.
 
 ```ruby
@@ -475,7 +475,7 @@ end
 ### Full messages
 
 `full_messages` plugin defines `Result#full_messages` method which returns
-error messages with prepended param name
+error messages with prepended param name.
 
 ```ruby
 class UserValidation < Fend
