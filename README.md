@@ -1,17 +1,11 @@
 # Fend [![Build Status](https://travis-ci.org/aradunovic/fend.svg?branch=master)](https://travis-ci.org/aradunovic/fend)
 
-Fend is a small and extensible Ruby data validation toolkit.
-
-Features:
-
-* Helpers for common validation cases
-* Type coercion
-* Dependency management
-* Custom/external validation support
-* Data processing
+Fend is a small and extensible data validation toolkit.
 
 ## Contents
 
+* [**Features**](#features)
+* [**Documentation**](#documentation)
 * [**Why?**](#why)
 * [**Installation**](#installation)
 * [**Introduction**](#introduction)
@@ -30,6 +24,20 @@ Features:
     * [Full messages](#full-messages)
 * [**Code of Conduct**](#code-of-conduct)
 * [**License**](#license)
+
+## Features
+
+Some of the features include:
+
+* Helpers for common validation cases
+* Type coercion
+* Dependency management
+* Custom/external validation support
+* Data processing
+
+## Documentation
+
+For detailed documentation visit [fend.radunovic.io](http://fend.radunovic.io)
 
 ## Why?
 
@@ -62,7 +70,7 @@ which will get you familiar with Fend's plugins.
 
 By default, Fend doesn't do much. As the example below shows, it provides
 methods for specifying params, fetching their values and appending errors.
-All checks need to be implemented by yourself.
+All checks need to be implemented manually.
 
 ```ruby
 require "fend"
@@ -179,6 +187,8 @@ end
 ```
 
 ## Plugins overview
+
+For complete plugins documentation, go to [fend.radunovic.io](http://fend.radunovic.io).
 
 ### Value helpers
 
