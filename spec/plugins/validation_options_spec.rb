@@ -1,3 +1,5 @@
+require "ostruct"
+
 require "spec_helper"
 
 RSpec.shared_examples "validation options custom message" do |option_name, input, options|
@@ -301,7 +303,70 @@ RSpec.describe "validation options plugin" do
       end
 
       include_examples "validation options custom message", :type, nil, of: String
+    end
 
+    describe ":allow_nil" do
+      context "when option value is true" do
+        it "skips validation if value is nil" do
+          validation.validate do |i|
+            i.param(:test) do |test|
+              test.validate(type: String, allow_nil: true)
+            end
+          end
+
+          expect(validation.call(test: nil)).to be_success
+        end
+      end
+
+      context "when option value is not true" do
+        it "does not skip validation if value is nil" do
+          [:foo, false, "foo"].each do |not_true_value|
+            validation.validate do |i|
+              i.param(:test) do |test|
+                test.validate(type: String, allow_nil: not_true_value)
+              end
+            end
+
+            expect(validation.call(test: nil)).to be_failure
+          end
+        end
+      end
+    end
+
+    describe ":allow_blank" do
+      let(:blank_values) do
+        [nil, "", "   ", "\r", "\n", "\t", " \n\r\t ", [], {}, false, OpenStruct.new(empty?: true)]
+      end
+
+      context "when option value is true" do
+        it "skips validation if value is blank" do
+          blank_values.each do |blank_value|
+            validation.validate do |i|
+              i.param(:test) do |test|
+                test.validate(presence: true, allow_blank: true)
+              end
+            end
+
+            expect(validation.call(test: blank_value)).to be_success
+          end
+        end
+      end
+
+      context "when option value is not true" do
+        it "does not skip validation if value is nil" do
+          blank_values.each do |blank_value|
+            [:foo, false, "foo"].each do |not_true_value|
+              validation.validate do |i|
+                i.param(:test) do |test|
+                  test.validate(presence: true, allow_blank: not_true_value)
+                end
+              end
+
+              expect(validation.call(test: blank_value)).to be_failure
+            end
+          end
+        end
+      end
     end
   end
 

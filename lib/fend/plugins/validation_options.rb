@@ -34,6 +34,20 @@ class Fend
     #
     #     email.validate type: { value: String }, format: { value: EMAIL_REGEX }
     #
+    # ## Allowing nil and blank values
+    #
+    # You can skip validation if param value is `nil` or blank by passing
+    # `:allow_nil` or `:allow_blank` options:
+    #
+    #     # will skip type validation if name.value.nil?
+    #     name.validate(type: String, allow_nil: true)
+    #
+    #     # will skip type validation if email.blank?
+    #     email.validate(type: String, allow_blank: true)
+    #
+    # To see what values are considered as blank,
+    # check ValueHelpers::ParamMethods#blank?.
+    #
     # `validation_options` supports ExternalValidation plugin:
     #
     #     plugin :external_validation
@@ -41,6 +55,7 @@ class Fend
     #     # ...
     #
     #     email.validate(with: CustomEmailValidator)
+
     module ValidationOptions
       NO_ARG_METHODS = [:absence, :presence, :acceptance].freeze
       ARRAY_ARG_METHODS = [:exclusion, :inclusion, :length_range].freeze
@@ -75,6 +90,11 @@ class Fend
         def validate(opts = {})
           return if opts.empty?
 
+          allow_nil   = opts.delete(:allow_nil)
+          allow_blank = opts.delete(:allow_blank)
+
+          return if (allow_nil == true && value.nil?) || (allow_blank == true && blank?)
+
           opts.each do |validator_name, args|
             method_name = "validate_#{validator_name}"
 
@@ -89,9 +109,6 @@ class Fend
                 validation_method_args = [args]
               end
             elsif args.is_a?(Hash)
-              next if args[:allow_nil] == true && value.nil?
-              next if args[:allow_blank] == true && blank?
-
               mandatory_arg_key = MANDATORY_ARG_KEYS[validator_name]
 
               unless args.key?(mandatory_arg_key) || args.key?(DEFAULT_ARG_KEY)
