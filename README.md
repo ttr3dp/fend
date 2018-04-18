@@ -1,4 +1,4 @@
-# Fend [![Build Status](https://travis-ci.org/aradunovic/fend.svg?branch=master)](https://travis-ci.org/aradunovic/fend)
+# Fend [![Gem Version](https://badge.fury.io/rb/fend.svg)](https://badge.fury.io/rb/fend) [![Build Status](https://travis-ci.org/aradunovic/fend.svg?branch=master)](https://travis-ci.org/aradunovic/fend)
 
 Fend is a small and extensible data validation toolkit.
 
