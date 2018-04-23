@@ -116,7 +116,7 @@ class Fend
           @_raw_data    = raw_data
           @_input_data  = process_input(raw_data) || raw_data
           @_output_data = process_output(@_input_data) || @_input_data
-          @_input_param  = param_class.new(@_input_data)
+          @_input_param = param_class.new(@_input_data)
         end
 
         # Returns validation block set on class level
@@ -140,9 +140,9 @@ class Fend
         # Process output data
         def process_output(output); end
 
-        # Start validation
+        # Execute validation block
         def validate(&block)
-          yield(@_input_param) if block_given?
+          instance_exec(@_input_param, &block) if block_given?
         end
 
         # Instantiate and return result

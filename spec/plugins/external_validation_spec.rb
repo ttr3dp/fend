@@ -2,13 +2,12 @@ require "spec_helper"
 
 RSpec.describe "external validation plugin" do
   let(:validation) { Class.new(Fend) { plugin :external_validation } }
-  let(:address_validation) do
-    Class.new(Fend) do
-      validate do |i|
-        i.param(:city) { |city| city.add_error("must be string") unless city.value.is_a?(String) }
-        i.param(:street) { |street| street.add_error("must be string") unless street.value.is_a?(String) }
-        i.param(:zip) { |zip| zip.add_error("must be integer") unless zip.value.is_a?(Integer) }
-      end
+
+  class AddressValidation < Fend
+    validate do |i|
+      i.param(:city) { |city| city.add_error("must be string") unless city.value.is_a?(String) }
+      i.param(:street) { |street| street.add_error("must be string") unless street.value.is_a?(String) }
+      i.param(:zip) { |zip| zip.add_error("must be integer") unless zip.value.is_a?(Integer) }
     end
   end
 
@@ -16,7 +15,7 @@ RSpec.describe "external validation plugin" do
     validation.validate do |i|
       i.param(:username) { |username| username.add_error("missing") if username.value.nil? }
 
-      i.param(:address) { |address| address.validate_with(address_validation) }
+      i.param(:address) { |address| address.validate_with(AddressValidation) }
     end
 
     expected_messages = {
