@@ -61,12 +61,6 @@ class Fend
     #
     # Since context value is set in the constructor, you should always call
     # `super` when/if overriding it.
-    #
-    #     def initialize(my, custom, arg, context: :editor)
-    #       super
-    #
-    #       # ...
-    #     end
     module Contexts
       module InstanceMethods
         def initialize(*args)
