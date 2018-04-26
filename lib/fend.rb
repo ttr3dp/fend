@@ -170,6 +170,10 @@ class Fend
 
         # Fetch nested value
         def [](name)
+          fetch(name)
+        end
+
+        def fetch(name)
           @value.fetch(name, nil) if @value.respond_to?(:fetch)
         end
 
