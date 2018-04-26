@@ -191,7 +191,7 @@ class Fend
 
         # Define array member param and execute validation block
         def each(&block)
-          return if (flat? && invalid?) || !@value.is_a?(Array)
+          return if (flat? && invalid?) || !@value.is_a?(Enumerable)
 
           @value.each_with_index do |value, index|
             param = _build_param(value)
