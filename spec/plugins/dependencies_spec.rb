@@ -22,7 +22,7 @@ RSpec.describe "dependencies plugin" do
     validation_class.plugin :dependencies, foo: :bar
 
     validation_class.validate(inject: %i(foo test_dep)) do |i, foo, test_dep|
-      i.param(:username) do |u|
+      i.params(:username) do |u|
         u.add_error("invalid_foo") unless foo.eql?(:bar) && test_dep.eql?("test_dep")
       end
     end

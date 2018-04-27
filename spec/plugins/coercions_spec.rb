@@ -30,7 +30,7 @@ RSpec.describe "coercions plugin" do
     validation.coerce(test: type)
 
     validation.validate do |i|
-      i.param(:test) { |t| t.add_error("failed coercion") unless t.value == comparison_value }
+      i.params(:test) { |t| t.add_error("failed coercion") unless t.value == comparison_value }
     end
   end
 

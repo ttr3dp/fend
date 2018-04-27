@@ -99,19 +99,19 @@ RSpec.describe "Fend" do
   describe "#call" do
     before do
       validation_class.validate  do |i|
-        i.param(:username) do |username|
+        i.params(:username) do |username|
           username.add_error("must be present") if username.value.nil? || username.value == ''
         end
 
-        i.param(:age) do |age|
+        i.params(:age) do |age|
           age.add_error("must be integer") unless age.value.is_a?(Integer)
         end
 
-        i.param(:address) do |address|
+        i.params(:address) do |address|
           address.add_error("must be hash") unless address.value.is_a?(Hash)
         end
 
-        i.param(:interests) do |interests|
+        i.params(:interests) do |interests|
           interests.add_error("must be array") unless interests.value.is_a?(Array)
         end
       end
@@ -152,26 +152,26 @@ RSpec.describe "Fend" do
     context "when params are nested" do
       before do
         validation_class.validate do |i|
-          i.param(:address) do |address|
+          i.params(:address) do |address|
             address.add_error("must be hash") unless address.value.is_a?(Hash)
 
-            address.param(:city) do |city|
+            address.params(:city) do |city|
               city.add_error("must be present") if city.value.nil? || city.value == ''
               city.add_error("must be string") unless city.value.is_a?(String)
             end
 
-            address.param(:street) do |street|
+            address.params(:street) do |street|
               street.add_error("must be present") if street.value.nil? || street.value == ''
               street.add_error("must be string") unless street.value.is_a?(String)
             end
 
-            address.param(:zip) do |zip|
+            address.params(:zip) do |zip|
               zip.add_error("must be present") if zip.value.nil?
               zip.add_error("must be integer") unless zip.value.is_a?(Integer)
             end
           end
 
-          i.param(:interests) do |interests|
+          i.params(:interests) do |interests|
             interests.add_error("must be array") unless interests.value.is_a?(Array)
 
             interests.each do |interest|

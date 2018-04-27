@@ -85,7 +85,7 @@ class Fend
         # Store validation block for later execution:
         #
         #   validate do |i|
-        #     i.param(:foo) do |foo|
+        #     i.params(:foo) do |foo|
         #       # foo validation logic
         #     end
         #   end

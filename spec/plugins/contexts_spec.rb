@@ -6,7 +6,7 @@ RSpec.describe "contexts plugin" do
       plugin :contexts
 
       validate do |i|
-        i.param(:username) do |username|
+        i.params(:username) do |username|
           context(:foo) do
             username.add_error("foo context error")
           end
@@ -44,7 +44,7 @@ RSpec.describe "contexts plugin" do
         plugin :contexts
 
         validate do |i|
-          i.param(:username) do |username|
+          i.params(:username) do |username|
             context(:foo) do
               username.add_error("foo context error")
             end

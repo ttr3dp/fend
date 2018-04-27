@@ -4,7 +4,7 @@ require "spec_helper"
 
 RSpec.shared_examples "validation options custom message" do |option_name, input, options|
   it "accepts :message option" do
-    validation.validate { |i| i.param(:test) { |t| t.validate(option_name => options.merge(message: "custom message")) } }
+    validation.validate { |i| i.params(:test) { |t| t.validate(option_name => options.merge(message: "custom message")) } }
 
     expect(validation.call(test: input).messages).to eq(test: ["custom message"])
   end
@@ -16,7 +16,7 @@ RSpec.describe "validation options plugin" do
   describe "it allows passing validation options" do
     describe ":absence" do
       it "validates param value absence" do
-        validation.validate { |i| i.param(:test) { |test| test.validate(absence: true) } }
+        validation.validate { |i| i.params(:test) { |test| test.validate(absence: true) } }
 
         expect(validation.call({})).to be_success
         expect(validation.call(test: "test")).to be_failure
@@ -28,7 +28,7 @@ RSpec.describe "validation options plugin" do
 
     describe ":presence" do
       it "validates param value presence" do
-        validation.validate { |i| i.param(:test) { |test| test.validate(presence: true) } }
+        validation.validate { |i| i.params(:test) { |test| test.validate(presence: true) } }
 
         expect(validation.call(test: "test")).to be_success
         expect(validation.call({})).to be_failure
@@ -39,7 +39,7 @@ RSpec.describe "validation options plugin" do
 
     describe ":acceptance" do
       it "validates param value acceptance" do
-        validation.validate { |i| i.param(:test) { |test| test.validate(acceptance: true) } }
+        validation.validate { |i| i.params(:test) { |test| test.validate(acceptance: true) } }
 
 
         [1, "1", true, "true", "TRUE", :yes, "YES", "yes"].each do |valid_value|
@@ -50,7 +50,7 @@ RSpec.describe "validation options plugin" do
 
       context "with :as option" do
         it "validates acceptance against option value" do
-          validation.validate { |i| i.param(:test) { |test| test.validate(acceptance: { as: [:foo, :bar] }) } }
+          validation.validate { |i| i.params(:test) { |test| test.validate(acceptance: { as: [:foo, :bar] }) } }
 
           %i(foo bar).each do |valid_value|
             expect(validation.call(test: valid_value)).to be_success
@@ -69,7 +69,7 @@ RSpec.describe "validation options plugin" do
     describe ":equality" do
       it "validates param value equality" do
         validation.validate do |i|
-          i.param(:test) do |test|
+          i.params(:test) do |test|
             test.validate(equality: 5)
             test.validate(equality: { value: 5 })
           end
@@ -86,7 +86,7 @@ RSpec.describe "validation options plugin" do
     describe ":exact_length" do
       it "validates param value exact length" do
         validation.validate do |i|
-          i.param(:test) do |test|
+          i.params(:test) do |test|
             test.validate(exact_length: 5)
             test.validate(exact_length: { of: 5 })
             test.validate(exact_length: { value: 5 })
@@ -104,7 +104,7 @@ RSpec.describe "validation options plugin" do
     describe ":exclusion" do
       it "validates param value exclusion from specified list of values" do
         validation.validate do |i|
-          i.param(:test) do |test|
+          i.params(:test) do |test|
             test.validate(exclusion: [:foo, :bar])
             test.validate(exclusion: { from: [:foo, :bar] })
             test.validate(exclusion: { value: [:foo, :bar] })
@@ -123,7 +123,7 @@ RSpec.describe "validation options plugin" do
     describe ":format" do
       it "validates param value format" do
         validation.validate do |i|
-          i.param(:test) do |test|
+          i.params(:test) do |test|
             test.validate(format: /\A(foo|bar)\z/)
             test.validate(format: { with: /\A(foo|bar)\z/ })
             test.validate(format: { value: /\A(foo|bar)\z/ })
@@ -142,7 +142,7 @@ RSpec.describe "validation options plugin" do
     describe ":greater_than" do
       it "validates param value > comparison value" do
         validation.validate do |i|
-          i.param(:test) do |test|
+          i.params(:test) do |test|
             test.validate(greater_than: 2)
             test.validate(greater_than: { value: 2 })
           end
@@ -159,7 +159,7 @@ RSpec.describe "validation options plugin" do
     describe ":greater_than_or_equal_to" do
       it "validates param value >= comparison value" do
         validation.validate do |i|
-          i.param(:test) do |test|
+          i.params(:test) do |test|
             test.validate(greater_than_or_equal_to: 2)
             test.validate(greater_than_or_equal_to: { value: 2 })
             test.validate(gteq: 2)
@@ -179,7 +179,7 @@ RSpec.describe "validation options plugin" do
     describe ":inclusion" do
       it "validates param value inclusion in specified list of values" do
         validation.validate do |i|
-          i.param(:test) do |test|
+          i.params(:test) do |test|
             test.validate(inclusion: [:foo, :bar])
             test.validate(inclusion: { in: [:foo, :bar] })
             test.validate(inclusion: { value: [:foo, :bar] })
@@ -198,7 +198,7 @@ RSpec.describe "validation options plugin" do
     describe ":length range" do
       it "validates param lhs <= value <= rhs" do
         validation.validate do |i|
-          i.param(:test) do |test|
+          i.params(:test) do |test|
             test.validate(length_range: 3..4)
             test.validate(length_range: { within: 3..4 })
             test.validate(length_range: { value: 3..4 })
@@ -217,7 +217,7 @@ RSpec.describe "validation options plugin" do
     describe ":less_than" do
       it "validates param value < comparison value" do
         validation.validate do |i|
-          i.param(:test) do |test|
+          i.params(:test) do |test|
             test.validate(less_than: 2)
             test.validate(less_than: { value: 2 })
           end
@@ -234,7 +234,7 @@ RSpec.describe "validation options plugin" do
     describe ":less_than_or_equal_to" do
       it "validates param value <= comparison value" do
         validation.validate do |i|
-          i.param(:test) do |test|
+          i.params(:test) do |test|
             test.validate(less_than_or_equal_to: 2)
             test.validate(less_than_or_equal_to: { value: 2 })
             test.validate(lteq: 2)
@@ -254,7 +254,7 @@ RSpec.describe "validation options plugin" do
     describe ":max_length" do
       it "validates param value max length" do
         validation.validate do |i|
-          i.param(:test) do |test|
+          i.params(:test) do |test|
             test.validate(max_length: 2)
             test.validate(max_length: { of: 2 })
             test.validate(max_length: { value: 2 })
@@ -272,7 +272,7 @@ RSpec.describe "validation options plugin" do
     describe ":min_length" do
       it "validates param value min length" do
         validation.validate do |i|
-          i.param(:test) do |test|
+          i.params(:test) do |test|
             test.validate(min_length: 2)
             test.validate(min_length: { of: 2 })
             test.validate(min_length: { value: 2 })
@@ -290,7 +290,7 @@ RSpec.describe "validation options plugin" do
     describe ":type" do
       it "validates param value kind" do
         validation.validate do |i|
-          i.param(:test) do |test|
+          i.params(:test) do |test|
             test.validate(type: String)
             test.validate(type: { of: String })
             test.validate(type: { value: String })
@@ -309,7 +309,7 @@ RSpec.describe "validation options plugin" do
       context "when option value is true" do
         it "skips validation if value is nil" do
           validation.validate do |i|
-            i.param(:test) do |test|
+            i.params(:test) do |test|
               test.validate(type: String, allow_nil: true)
             end
           end
@@ -322,7 +322,7 @@ RSpec.describe "validation options plugin" do
         it "does not skip validation if value is nil" do
           [:foo, false, "foo"].each do |not_true_value|
             validation.validate do |i|
-              i.param(:test) do |test|
+              i.params(:test) do |test|
                 test.validate(type: String, allow_nil: not_true_value)
               end
             end
@@ -342,7 +342,7 @@ RSpec.describe "validation options plugin" do
         it "skips validation if value is blank" do
           blank_values.each do |blank_value|
             validation.validate do |i|
-              i.param(:test) do |test|
+              i.params(:test) do |test|
                 test.validate(presence: true, allow_blank: true)
               end
             end
@@ -357,7 +357,7 @@ RSpec.describe "validation options plugin" do
           blank_values.each do |blank_value|
             [:foo, false, "foo"].each do |not_true_value|
               validation.validate do |i|
-                i.param(:test) do |test|
+                i.params(:test) do |test|
                   test.validate(presence: true, allow_blank: not_true_value)
                 end
               end
@@ -372,7 +372,7 @@ RSpec.describe "validation options plugin" do
 
   context "when option is invalid" do
     it "raises error" do
-      validation.validate { |i| i.param(:test) { |t| t.validate(foo: true) } }
+      validation.validate { |i| i.params(:test) { |t| t.validate(foo: true) } }
 
       expect { validation.call({}) }.to raise_error(Fend::Error, "undefined validation method 'foo'")
     end

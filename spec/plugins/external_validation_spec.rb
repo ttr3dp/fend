@@ -5,17 +5,17 @@ RSpec.describe "external validation plugin" do
 
   class AddressValidation < Fend
     validate do |i|
-      i.param(:city) { |city| city.add_error("must be string") unless city.value.is_a?(String) }
-      i.param(:street) { |street| street.add_error("must be string") unless street.value.is_a?(String) }
-      i.param(:zip) { |zip| zip.add_error("must be integer") unless zip.value.is_a?(Integer) }
+      i.params(:city) { |city| city.add_error("must be string") unless city.value.is_a?(String) }
+      i.params(:street) { |street| street.add_error("must be string") unless street.value.is_a?(String) }
+      i.params(:zip) { |zip| zip.add_error("must be integer") unless zip.value.is_a?(Integer) }
     end
   end
 
   it "supports external Fend validations" do
     validation.validate do |i|
-      i.param(:username) { |username| username.add_error("missing") if username.value.nil? }
+      i.params(:username) { |username| username.add_error("missing") if username.value.nil? }
 
-      i.param(:address) { |address| address.validate_with(AddressValidation) }
+      i.params(:address) { |address| address.validate_with(AddressValidation) }
     end
 
     expected_messages = {
@@ -36,7 +36,7 @@ RSpec.describe "external validation plugin" do
 
   it "supports custom objects" do
     validation.validate do |i|
-      i.param(:username) do |username|
+      i.params(:username) do |username|
         username.add_error("must be present") if username.value.nil?
         username.validate_with(->(value) { ["must be string"] unless value.is_a?(String) })
       end
@@ -48,8 +48,8 @@ RSpec.describe "external validation plugin" do
   context "when nested param are externaly validated" do
     it "supports combining of internal and external validations" do
       validation.validate do |i|
-        i.param(:address) do |address|
-          address.param(:city) { |c| c.add_error("invalid internaly") }
+        i.params(:address) do |address|
+          address.params(:city) { |c| c.add_error("invalid internaly") }
 
           address.validate_with(->(_) { { city: ["invalid externaly"] } })
         end
@@ -61,7 +61,7 @@ RSpec.describe "external validation plugin" do
     context "when param is invalid" do
       it "does not append messages" do
         validation.validate do |i|
-          i.param(:address) do |address|
+          i.params(:address) do |address|
             address.add_error("must be hash")
             address.validate_with(->(_) { { city: ["invalid"] } })
           end
@@ -74,7 +74,7 @@ RSpec.describe "external validation plugin" do
     context "when param is valid" do
       it "appends messages" do
         validation.validate do |i|
-          i.param(:address) do |address|
+          i.params(:address) do |address|
             address.validate_with(->(_) { { city: ["invalid"] } })
           end
         end
