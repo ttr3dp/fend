@@ -188,6 +188,8 @@ class Fend
 
         # Define child param and execute validation block
         def param(name, &block)
+          Fend.deprecation("Calling Param#param to specify params is deprecated and will not be supported in Fend 0.3.0. Use Param#params method instead.")
+
           return if flat? && invalid?
 
           value = self[name]
@@ -196,6 +198,20 @@ class Fend
           yield(param)
 
           _nest_errors(name, param.errors) if param.invalid?
+        end
+
+        # Define child params and execute validation block
+        def params(*names, &block)
+          return if flat? && invalid?
+
+          params = names.each_with_object({}) do |name, result|
+            param = _build_param(name, self[name])
+            result[name] = param
+          end
+
+          yield(*params.values)
+
+          params.each { |name, param| _nest_errors(name, param.errors) if param.invalid? }
         end
 
         # Define array member param and execute validation block

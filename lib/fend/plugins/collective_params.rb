@@ -2,7 +2,7 @@
 
 class Fend
   module Plugins
-    # `collective_params` plugin allows you to specify multiple params at once,
+    # *[DEPRECATED] `collective_params` plugin allows you to specify multiple params at once,
     # instead of defining each one separately.
     #
     # Example:
@@ -40,6 +40,8 @@ class Fend
     #     end
     module CollectiveParams
       module ParamMethods
+        warn("collective_params plugin is deprecated and will be removed in Fend 0.3.0. #params method is now provided out of the box.")
+
         def params(*names, &block)
           return if flat? && invalid?
 
