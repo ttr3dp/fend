@@ -44,7 +44,7 @@ class Fend
     #       end
     #     end
     #
-    # ## Handling hash and enumerable values
+    # ## Handling hash values
     #
     # If an attribute value is a hash, you can use the `#param`
     # (or `#params` with `collective_params` plugin) method.
