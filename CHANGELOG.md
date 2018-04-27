@@ -2,5 +2,10 @@
 
 * Add `:allow_nil` and `:allow_blank` to `validation_options` plugin (@aradunovic)
 * Execute validation block in context of the Fend class (@aradunovic)
+* Add deprecatation warning method (@aradunovic)
+* Move `Param#params` from `collective_params` plugin to the core (@aradunovic) and:
+    * Deprecate `Param#param` method in favor of `Param#params`(@aradunovic)
+    * Deprecate `collective_params` plugin (@aradunovic)
+* Refactor specs to use `Param#params` method instead of deprecated `Param#param`
 * Add `contexts` plugin (@aradunovic)
 * Add `object_validation` plugin (@aradunovic)
