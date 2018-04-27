@@ -6,11 +6,8 @@ RSpec.describe "object validation plugin" do
 
   it "enables object attrs and methods validation" do
     validation_class.validate do |i|
-      i.attr(:username) do |username|
+      i.attrs(:username, :email) do |username, email|
         username.add_error("cannot be shorter than 5 chars") unless username.value.length >= 5
-      end
-
-      i.attr(:email) do |email|
         email.add_error("must be string") unless email.value.is_a?(String)
       end
     end
@@ -22,26 +19,9 @@ RSpec.describe "object validation plugin" do
   end
 
   it "raises if input method is undefined" do
-    validation_class.validate { |i| i.attr(:oops) { } }
+    validation_class.validate { |i| i.attrs(:oops) { } }
 
     expect{ validation_class.call(input) }.to raise_error(NoMethodError, /undefined method `oops'/)
-  end
-
-  context "collective_params plugin support" do
-    let(:validation_class) { Class.new(Fend) { plugin :collective_params; plugin :object_validation } }
-
-    it "allows multiple attributes specification" do
-      validation_class.validate do |i|
-        i.attrs(:username, :email) do |username, email|
-          username.add_error("invalid") unless username.value == "john"
-          email.add_error("invalid") unless email.value.nil?
-        end
-      end
-
-      result = validation_class.call(input)
-
-      expect(result).to be_success
-    end
   end
 
   context "when attr is a hash" do
@@ -49,9 +29,9 @@ RSpec.describe "object validation plugin" do
 
     it "enables nested params fetching with #param" do
       validation_class.validate do |i|
-        i.attr(:address) do |address|
-          address.param(:street) { |s| s.add_error("invalid") unless s.value == "Elm Street" }
-          address.param(:city) { |c| c.add_error("invalid") unless c.value == "Mordor" }
+        i.attrs(:address) do |address|
+          address.params(:street) { |s| s.add_error("invalid") unless s.value == "Elm Street" }
+          address.params(:city) { |c| c.add_error("invalid") unless c.value == "Mordor" }
         end
       end
 
