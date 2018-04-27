@@ -13,7 +13,7 @@ class Fend
     #
     # 1. **Inheritable dependencies** - available in current validation class
     #                                   and in subclasses
-    # 2. **Local dependencies** - available only in current validation class
+    # 2. *[DEPRECATED] **Local dependencies** - available only in current validation class
     #
     # ### Inheritable dependencies
     #
@@ -30,10 +30,10 @@ class Fend
     #
     # Now, all `Fend` subclasses will be able to resolve `address_checker`
     #
-    # ### Local dependencies
+    # ### Local dependencies *[DEPRECATED]
     #
-    # Local dependencies can be registered in `deps` registry, on instance level.
-    # Recommended place to do this is the initializer.
+    # ~~Local dependencies can be registered in `deps` registry, on instance level.
+    # Recommended place to do this is the initializer.~~
     #
     #     class UserValidation < Fend
     #       plugin :dependencies
@@ -51,6 +51,26 @@ class Fend
     #
     #     user_validation = UserValidation.new(User)
     #
+    # You can store local dependencies by defining attributes and instance
+    # methods. Since v0.2.0, instance methods are available in validation block
+    #
+    #     class UserValidation < Fend
+    #
+    #       def initialize(model)
+    #         @model = model
+    #       end
+    #
+    #       def model
+    #         @model
+    #       end
+    #
+    #       def address_checker
+    #         AddressChecker.new
+    #       end
+    #     end
+    #
+    #     user_validation = UserValidation.new(User)
+    #
     # ## Resolving dependencies
     #
     # To resolve dependencies, `:inject` option needs to be provided to the
@@ -59,13 +79,17 @@ class Fend
     #     class UserValidation < Fend
     #       plugin :dependencies, user_model: User
     #
-    #       validate(inject: [:user_model, :address_checker]) do |i, user_model, address_checker|
+    #       validate(inject: [:user_model]) do |i, user_model|
     #         user_model #=> User
     #         address_checker #=> #<AddressChecker ...>
     #       end
     #
     #       def initialize(address_checker)
-    #         deps[:address_checker] = address_checker
+    #         @address_checker = address_checker
+    #       end
+    #
+    #       def address_checker
+    #         @address_checker
     #       end
     #     end
     #
@@ -112,6 +136,8 @@ class Fend
 
       module InstanceMethods
         def deps
+          Fend.deprecation("Local dependencies are deprecated and will not be supported in Fend 0.3.0. Instead, you can set attributes or define custom methods which will be available in validation block.")
+
           @_deps ||= self.class.opts[:dependencies].dup
         end
 

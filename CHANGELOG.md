@@ -7,5 +7,7 @@
     * Deprecate `Param#param` method in favor of `Param#params`(@aradunovic)
     * Deprecate `collective_params` plugin (@aradunovic)
 * Refactor specs to use `Param#params` method instead of deprecated `Param#param`
+* Store param name for easier debugging (@aradunovic)
 * Add `contexts` plugin (@aradunovic)
 * Add `object_validation` plugin (@aradunovic)
+* Deprecate local dependencies in `dependencies` plugin (@aradunovic)
