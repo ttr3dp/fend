@@ -25,7 +25,8 @@ class Fend
     #
     #     validation.success? #=> false
     #     validation.messages #=> { username: ["must be present"], email: ["is in invalid format"] }
-    # As the example show, the only change is that instread of the `#param` you
+    #
+    # As the example shows, the only change is that instread of the `#param` you
     # should use `#attr` method.
     #
     # ## Collective attributes
