@@ -96,6 +96,11 @@ class Fend
         def call(input)
           new.call(input)
         end
+
+        # Prints a deprecation warning to standard error.
+        def deprecation(message)
+          warn "FEND DEPRECATION WARNING: #{message}"
+        end
       end
 
       module InstanceMethods
