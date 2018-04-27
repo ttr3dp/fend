@@ -44,7 +44,7 @@ class Fend
           return if flat? && invalid?
 
           params = names.each_with_object({}) do |name, result|
-            param = _build_param(self[name])
+            param = _build_param(name, self[name])
             result[name] = param
           end
 

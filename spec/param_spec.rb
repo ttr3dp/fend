@@ -1,7 +1,7 @@
 require "spec_helper"
 
 RSpec.describe Fend::Param do
-  let(:param) { described_class.new(foo: :bar) }
+  let(:param) { described_class.new(:input, foo: :bar) }
 
   describe ".fend_class" do
     it "references namespace class" do
@@ -15,6 +15,7 @@ RSpec.describe Fend::Param do
   describe "#initialize" do
     it "sets properties" do
       expect(param.value).to eq(foo: :bar)
+      expect(param.name).to eq(:input)
       expect(param.errors).to eq([])
     end
   end
@@ -28,7 +29,7 @@ RSpec.describe Fend::Param do
 
     context "when current value is array" do
       it "returns member by index" do
-        param = described_class.new([1, 2, 3])
+        param = described_class.new(:input, [1, 2, 3])
         expect(param[0]).to eq(1)
         expect(param[1]).to eq(2)
         expect(param[2]).to eq(3)
@@ -37,7 +38,7 @@ RSpec.describe Fend::Param do
 
     context "when current value is not hash nor array" do
       it "returns nil" do
-        param = described_class.new("foo")
+        param = described_class.new(:input, "foo")
 
         expect(param[:foo]).to be_nil
       end
@@ -53,7 +54,7 @@ RSpec.describe Fend::Param do
   end
 
   describe "#each" do
-    let(:param) { described_class.new(foo: [1, 2, 3]) }
+    let(:param) { described_class.new(:input, foo: [1, 2, 3]) }
 
     it "validates array params" do
       param.param(:foo) do |foo|

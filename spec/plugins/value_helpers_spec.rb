@@ -10,7 +10,7 @@ RSpec.describe "value helpers plugin" do
 
   describe "#dig" do
     let(:value) { nil }
-    let(:param) { param_class.new(value) }
+    let(:param) { param_class.new(:input, value) }
 
     context "when value is a hash" do
       let(:value) { { address: { street: "Elm street", city: { name: "Mordor", zip: 666 } } } }
@@ -86,13 +86,13 @@ RSpec.describe "value helpers plugin" do
   describe "#present?" do
     it "returns true when value is present" do
       [1, "test", " test     ", :test, Object.new, OpenStruct.new(empty?: false), [1, 2, 3], { one: 1 }, true].each do |present_value|
-        expect(param_class.new(present_value)).to be_present
+        expect(param_class.new(:input, present_value)).to be_present
       end
     end
 
     it "returns false when value is blank" do
       [nil, "", "    ", "\r", "\n", "\t", " \n\r\t  ", [], {}, false, OpenStruct.new(empty?: true)].each do |blank_value|
-        expect(param_class.new(blank_value)).not_to be_present
+        expect(param_class.new(:input, blank_value)).not_to be_present
       end
     end
   end
@@ -100,13 +100,13 @@ RSpec.describe "value helpers plugin" do
   describe "#blank?" do
     it "returns false when value is present" do
       [1, "test", " test     ", :test, Object.new, OpenStruct.new(empty?: false), [1, 2, 3], { one: 1 }, true].each do |present_value|
-        expect(param_class.new(present_value)).not_to be_blank
+        expect(param_class.new(:input, present_value)).not_to be_blank
       end
     end
 
     it "returns true when value is blank" do
       [nil, "", "    ", "\r", "\n", "\t", " \n\r\t  ", [], {}, false, OpenStruct.new(empty?: true)].each do |blank_value|
-        expect(param_class.new(blank_value)).to be_blank
+        expect(param_class.new(:input, blank_value)).to be_blank
       end
     end
   end
@@ -114,13 +114,13 @@ RSpec.describe "value helpers plugin" do
   describe "#empty_string?" do
     it "returns true when value is an empty string" do
       ["", "    ", "\r", "\n", "\t", " \n\r\t  "].each do |empty_string|
-        expect(param_class.new(empty_string)).to be_empty_string
+        expect(param_class.new(:input, empty_string)).to be_empty_string
       end
     end
 
     it "returns false when value is not an empty string" do
       ["a", "    a", "foo \r", "bar \n", "\t          baz", "foo   bar \n\r\t baz "].each do |non_empty_string|
-        expect(param_class.new(non_empty_string)).not_to be_empty_string
+        expect(param_class.new(:input, non_empty_string)).not_to be_empty_string
       end
     end
   end
@@ -128,7 +128,7 @@ RSpec.describe "value helpers plugin" do
   describe "#type_of?" do
     context "when argument is a class" do
       it "checks by invoking #is_a? on value" do
-        param = param_class.new("foo")
+        param = param_class.new(:input, "foo")
 
         allow(param.value).to receive(:is_a?).and_return("is_a? INVOKED")
         FakeClass = Class.new
@@ -142,10 +142,10 @@ RSpec.describe "value helpers plugin" do
     context "when argument is a string or a symbol" do
       context "when argument value is 'boolean'" do
         it "returns true if value is TrueClass or FalseClass and false otherwise" do
-          true_param = param_class.new(true)
-          false_param = param_class.new(false)
+          true_param = param_class.new(:input, true)
+          false_param = param_class.new(:input, false)
 
-          non_bool_param = param_class.new("boolean")
+          non_bool_param = param_class.new(:input, "boolean")
 
           ["boolean", :boolean].each do |ref|
             expect(true_param).to be_type_of(ref)
@@ -159,10 +159,10 @@ RSpec.describe "value helpers plugin" do
 
       context "when argument value is 'decimal'" do
         it "returns true if value is Float or BigDecimal and false otherwise" do
-          float_param = param_class.new(25.045)
-          big_decimal_param = param_class.new(BigDecimal.new(25))
+          float_param = param_class.new(:input, 25.045)
+          big_decimal_param = param_class.new(:input, BigDecimal.new(25))
 
-          non_decimal_param = param_class.new("decimal")
+          non_decimal_param = param_class.new(:input, "decimal")
 
           ["decimal", :decimal].each do |ref|
             expect(float_param).to be_type_of(ref)
@@ -175,9 +175,9 @@ RSpec.describe "value helpers plugin" do
 
       context "when argument value is 'nil'" do
         it "returns true if value is NilClass and false otherwise" do
-          nil_param = param_class.new(nil)
+          nil_param = param_class.new(:input, nil)
 
-          non_nil_param = param_class.new("nil")
+          non_nil_param = param_class.new(:input, "nil")
 
           ["nil", :nil].each do |ref|
             expect(nil_param).to be_type_of(ref)
@@ -190,7 +190,7 @@ RSpec.describe "value helpers plugin" do
       it "returns true when constantized argument matches value class" do
         { string: "string", integer: 1, float: 4.4, big_decimal: BigDecimal.new(1), date: Date.new, time: Time.new,
           date_time: DateTime.new, array: Array.new, hash: Hash.new, true_class: true, false_class: false, symbol: :sym }.each do |arg, value|
-          param = param_class.new(value)
+          param = param_class.new(:input, value)
 
           [arg, arg.to_s].each { |ref| expect(param).to be_type_of(ref) }
         end
@@ -199,7 +199,7 @@ RSpec.describe "value helpers plugin" do
       it "returns false when constantized argument does not matche value class" do
         { string: 1, integer: "1", float: nil, big_decimal: :foo, date: "date", time: "time",
           date_time: "datetime", array: Hash.new, hash: Array.new, true_class: 1, false_class: 0, symbol: "sym" }.each do |arg, value|
-          param = param_class.new(value)
+          param = param_class.new(:input, value)
 
           [arg, arg.to_s].each { |ref| expect(param).not_to be_type_of(ref) }
         end
@@ -207,7 +207,7 @@ RSpec.describe "value helpers plugin" do
 
       it "raises error if constant is uninitialized" do
         [:foo, "foo"].each do |uninit_const|
-          expect { param_class.new(uninit_const).type_of?(uninit_const) }.to raise_error(NameError, "uninitialized constant Foo")
+          expect { param_class.new(:input, uninit_const).type_of?(uninit_const) }.to raise_error(NameError, "uninitialized constant Foo")
         end
       end
     end

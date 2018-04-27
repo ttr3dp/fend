@@ -2,7 +2,7 @@ require "spec_helper"
 
 RSpec.describe "collective params plugin" do
   let(:validation) { Class.new(Fend) { plugin :collective_params } }
-  let(:param) { validation::Param.new(foo: :bar) }
+  let(:param) { validation::Param.new(:input, foo: :bar) }
 
   it "validates nested params" do
     param.params(:foo, :bar, :baz) do |foo, bar, baz|

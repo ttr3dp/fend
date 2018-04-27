@@ -66,7 +66,7 @@ class Fend
           return if flat? && invalid?
 
           attrs = names.each_with_object({}) do |name, result|
-            attr = _build_param(fetch_attr_value(name))
+            attr = _build_param(name, fetch_attr_value(name))
             result[name] = attr
           end
 
@@ -85,7 +85,7 @@ class Fend
           return if flat? && invalid?
 
           value = fetch_attr_value(name)
-          attr = _build_param(value)
+          attr = _build_param(name, value)
 
           yield(attr)
 

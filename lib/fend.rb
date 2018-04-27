@@ -116,7 +116,7 @@ class Fend
           @_raw_data    = raw_data
           @_input_data  = process_input(raw_data) || raw_data
           @_output_data = process_output(@_input_data) || @_input_data
-          @_input_param = param_class.new(@_input_data)
+          @_input_param = param_class.new(:input, @_input_data)
         end
 
         # Returns validation block set on class level
@@ -160,10 +160,14 @@ class Fend
         # Get param value
         attr_reader :value
 
+        # Get param name
+        attr_reader :name
+
         # Get param validation errors
         attr_reader :errors
 
-        def initialize(value)
+        def initialize(name, value)
+          @name = name
           @value = value
           @errors = []
         end
@@ -182,7 +186,7 @@ class Fend
           return if flat? && invalid?
 
           value = self[name]
-          param = _build_param(value)
+          param = _build_param(name, value)
 
           yield(param)
 
@@ -194,7 +198,7 @@ class Fend
           return if (flat? && invalid?) || !@value.is_a?(Enumerable)
 
           @value.each_with_index do |value, index|
-            param = _build_param(value)
+            param = _build_param(index, value)
 
             yield(param, index)
 
@@ -222,7 +226,7 @@ class Fend
         end
 
         def to_s
-          "#{fend_class.inspect}::Param"
+          "#{fend_class.inspect}::Param #{super}"
         end
 
         # Return Fend class under which Param class is namespaced
