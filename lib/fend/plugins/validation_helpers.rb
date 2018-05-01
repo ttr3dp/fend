@@ -8,7 +8,7 @@ class Fend
     #     plugin :validation_helpers
     #
     #     validate do |i|
-    #       i.param(:username) do |username|
+    #       i.params(:username) do |username|
     #         username.validate_presence
     #         username.validate_max_length(20)
     #         username.validate_type(String)

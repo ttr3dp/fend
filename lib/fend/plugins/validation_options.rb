@@ -9,7 +9,7 @@ class Fend
     #     plugin :validation_options
     #
     #     validate do |i|
-    #       i.param(:email) do |email|
+    #       i.params(:email) do |email|
     #         email.validate(presence: true, type: String, format: EMAIL_REGEX)
     #       end
     #     end

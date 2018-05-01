@@ -32,8 +32,8 @@ class Fend
     #
     # ### Local dependencies *[DEPRECATED]
     #
-    # ~~Local dependencies can be registered in `deps` registry, on instance level.
-    # Recommended place to do this is the initializer.~~
+    # Local dependencies can be registered in `deps` registry, on instance level.
+    # Recommended place to do this is the initializer.
     #
     #     class UserValidation < Fend
     #       plugin :dependencies
@@ -46,26 +46,6 @@ class Fend
     #
     #         # hardcode it yourself
     #         deps[:address_checker] = AddressChecker.new
-    #       end
-    #     end
-    #
-    #     user_validation = UserValidation.new(User)
-    #
-    # You can store local dependencies by defining attributes and instance
-    # methods. Since v0.2.0, instance methods are available in validation block
-    #
-    #     class UserValidation < Fend
-    #
-    #       def initialize(model)
-    #         @model = model
-    #       end
-    #
-    #       def model
-    #         @model
-    #       end
-    #
-    #       def address_checker
-    #         AddressChecker.new
     #       end
     #     end
     #
@@ -111,7 +91,7 @@ class Fend
     # Here's an example of email uniqueness validation:
     #
     #     validate(inject: [:user_model]) do |i, user_model|
-    #       i.param(:email) do |email|
+    #       i.params(:email) do |email|
     #         email.add_error("must be unique") if user_model.exists?(email: email.value)
     #       end
     #     end

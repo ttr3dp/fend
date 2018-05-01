@@ -30,7 +30,6 @@ class Fend
     #
     #     class AddressValidation < Fend
     #       plugin :validation_options
-    #       plugin :collective_params
     #
     #       validate do |i|
     #         i.params(:city, :street) do |city, street|
@@ -42,7 +41,6 @@ class Fend
     #
     #     class UserValidation < Fend
     #       plugin :external_validation
-    #       plugin :collective_params
     #
     #       validate do |i|
     #         i.params(:email, :address) do |email, address|

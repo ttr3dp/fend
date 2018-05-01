@@ -9,7 +9,7 @@ class Fend
     #       plugin :contexts
     #
     #       validate do |i|
-    #         i.param(:account_type) do |acc_type|
+    #         i.params(:account_type) do |acc_type|
     #           context(:admin) do
     #             acc_type.validate_equality("admin")
     #           end
@@ -37,13 +37,13 @@ class Fend
     #
     #     validate do |i|
     #       context(:admin) do
-    #         i.param(:admin_specific_param) do |asp|
+    #         i.params(:admin_specific_param) do |asp|
     #           # ...
     #         end
     #       end
     #
     #       context(:editor) do
-    #         i.param(:editor_specific_param) do |esp|
+    #         i.params(:editor_specific_param) do |esp|
     #           # ...
     #         end
     #       end
