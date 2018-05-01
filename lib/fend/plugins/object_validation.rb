@@ -28,23 +28,22 @@ class Fend
     #
     # ## Handling hash values
     #
-    # If an attribute value is a hash, you can still use the `#params` method
+    # If you expect for an attribute value to be a hash, you can still use
+    # the `#params` method:
     #
-    #     # user.address #=> { city: "My city", street: "My Street" }
+    #     # user.address #=> { city: "My city", street: "My street" }
     #     user.attrs(:address) do |address|
-    #       address.params(:city, :street) { |city, street| # ... }
+    #       address.params(:city, :street) do |city, street|
+    #         # ...
+    #       end
     #     end
     module ObjectValidation
       module ParamMethods
-        def fetch_attr_value(name)
-          @value.public_send(name)
-        end
-
         def attrs(*names, &block)
           return if flat? && invalid?
 
           attrs = names.each_with_object({}) do |name, result|
-            attr = _build_param(name, fetch_attr_value(name))
+            attr = _build_param(name, @value.public_send(name))
             result[name] = attr
           end
 
