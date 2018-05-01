@@ -2,11 +2,11 @@ Validation:
   -
     name: validation_helpers
     path: ValidationHelpers.html
-    description: Provides helper methods for common validation cases
+    description: Provides helper methods for common validation cases.
   -
     name: validation_options
     path: ValidationOptions.html
-    description: Specify validations as method options
+    description: Specify validations as method options.
   -
     name: external_validation
     path: ExternalValidation.html
@@ -15,6 +15,14 @@ Validation:
     name: dependencies
     path: Dependencies.html
     description: Register and resolve validation dependencies.
+  -
+    name: contexts
+    path: Contexts.html
+    description: Adds support for contextual validations.
+  -
+    name: object_validation
+    path: ObjectValidation.html
+    description: Validate object attributes and method return values.
 
 Params:
   -
@@ -24,7 +32,7 @@ Params:
   -
     name: collective_params
     path: CollectiveParams.html
-    description: Specify multiple params at once in validation block, instead of defining each one separately.
+    description: "[DEPRECATED] Same feature is provided out of the box since v0.2.0."
 
 Data:
   -
@@ -40,4 +48,4 @@ Messages:
   -
     name: full_messages
     path: FullMessages.html
-    description: Generates error messages with prepended param name
+    description: Generates error messages with prepended param name.
