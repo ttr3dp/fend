@@ -1,4 +1,4 @@
-## HEAD
+## 0.2.0 (2018-05-02)
 
 * Add `:allow_nil` and `:allow_blank` to `validation_options` plugin (@aradunovic)
 * Execute validation block in context of the Fend class (@aradunovic)
