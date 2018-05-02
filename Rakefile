@@ -18,7 +18,9 @@ RDoc::Task.new do |t|
   ]
   t.rdoc_files.add Dir[
     "README.md",
-    "lib/**/*.rb"
+    "lib/**/*.rb",
+    "doc/*.md",
+    "doc/release_notes/*.md"
   ]
 end
 

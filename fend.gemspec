@@ -11,7 +11,7 @@ Gem::Specification.new do |gem|
   gem.homepage     = "https://fend.radunovic.io"
   gem.license      = "MIT"
 
-  gem.files        = Dir["README.md", "LICENSE.txt", "lib/**/*.rb", "fend.gemspec"]
+  gem.files        = Dir["README.md", "LICENSE.txt", "lib/**/*.rb", "fend.gemspec", "doc/*.md"]
   gem.require_path = "lib"
 
   gem.required_ruby_version = ">= 2.0"
