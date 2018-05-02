@@ -28,8 +28,8 @@ class Fend
     #
     # ## Handling hash values
     #
-    # If you expect for an attribute value to be a hash, you can still use
-    # the `#params` method:
+    # If attribute value should be a hash, you can still use the `#params`
+    # method:
     #
     #     # user.address #=> { city: "My city", street: "My street" }
     #     user.attrs(:address) do |address|
