@@ -1,3 +1,8 @@
+## HEAD
+
+* Add `base_errors` plugin (@aradunovic)
+* Do not generate full messages for base errors (@aradunovic)
+
 ## 0.2.0 (2018-05-02)
 
 * Add `:allow_nil` and `:allow_blank` to `validation_options` plugin (@aradunovic)
