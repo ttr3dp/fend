@@ -63,4 +63,35 @@ RSpec.describe "full messages plugin" do
       expect(full_messages).to eq(tags: { foo: ["foo is invalid"] })
     end
   end
+
+  context "base errors" do
+    before do
+      validation.plugin :base_errors
+
+      validation.validate do |i|
+        add_base_error("should be skipped")
+        i.params(:username) do |username|
+          username.add_error("must be present")
+        end
+      end
+    end
+
+    it "skips base error messages" do
+      expect(validation.call({}).full_messages).to eq(
+        base: ["should be skipped"],
+        username: ["username must be present"]
+      )
+    end
+
+    context "when custom key is specified" do
+      it "skips base error messages" do
+        validation.plugin :base_errors, key: :be_key
+
+        expect(validation.call({}).full_messages).to eq(
+          be_key: ["should be skipped"],
+          username: ["username must be present"]
+        )
+      end
+    end
+  end
 end
