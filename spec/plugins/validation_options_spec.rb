@@ -376,6 +376,5 @@ RSpec.describe "validation options plugin" do
 
       expect { validation.call({}) }.to raise_error(Fend::Error, "undefined validation method 'foo'")
     end
-
   end
 end
