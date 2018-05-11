@@ -214,16 +214,21 @@ class Fend
           params.each { |name, param| _nest_errors(name, param.errors) if param.invalid? }
         end
 
-        # Define array member param and execute validation block
-        def each(&block)
+        # Define enumerable param member and execute validation block
+        def each(opts = {}, &block)
           return if (flat? && invalid?) || !@value.is_a?(Enumerable)
 
+          is_hash = opts[:hash].eql?(true)
+
+          return if is_hash && !@value.is_a?(Hash)
+
           @value.each_with_index do |value, index|
-            param = _build_param(index, value)
+            param_name, param_value = is_hash ? value : [index, value]
+            param = _build_param(param_name, param_value)
 
             yield(param, index)
 
-            _nest_errors(index, param.errors) if param.invalid?
+            _nest_errors(param.name, param.errors) if param.invalid?
           end
         end
 

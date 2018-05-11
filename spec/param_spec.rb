@@ -71,7 +71,7 @@ RSpec.describe Fend::Param do
   end
 
   describe "#each" do
-    let(:param) { described_class.new(:input, foo: [1, 2, 3]) }
+    let(:param) { described_class.new(:input, { foo: [1, 2, 3], bar: { 0 => { name: "jack" }, 1 => { name: "jane" } } }) }
 
     it "validates array params" do
       param.params(:foo) do |foo|
@@ -81,6 +81,19 @@ RSpec.describe Fend::Param do
       end
 
       expect(param.errors).to eq(foo: { 0 => ["must be string"], 1 => ["must be string"], 2 => ["must be string"] })
+    end
+
+    it "validates hash params" do
+      param.params(:bar) do |bar|
+        bar.each(hash: true) do |p|
+          p.params(:name) do |name|
+            name.add_error("invalid #{name.value}")
+          end
+        end
+      end
+
+      expect(param.errors).to eq(bar: { 0 => { name: ["invalid jack"] },
+                                        1 => { name: ["invalid jane"] } })
     end
 
     context "with index" do
