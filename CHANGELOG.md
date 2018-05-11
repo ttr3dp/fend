@@ -2,6 +2,7 @@
 
 * Add `base_errors` plugin (@aradunovic)
 * Do not generate full messages for base errors (@aradunovic)
+* Add support for hash in `Param#each` through `:hash` option (@aradunovic)
 
 ## 0.2.0 (2018-05-02)
 
