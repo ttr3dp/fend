@@ -4,11 +4,11 @@ Gem::Specification.new do |gem|
   gem.name         = "fend"
   gem.version      = Fend.version
   gem.authors      = ["Aleksandar Radunovic"]
-  gem.email        = ["aleksandar@radunovic.io"]
+  gem.email        = ["a.radunovic@pm.me"]
 
   gem.summary      = "Small and extensible data validation toolkit"
   gem.description  = gem.summary
-  gem.homepage     = "https://fend.radunovic.io"
+  gem.homepage     = "https://aradunovic.github.io/fend"
   gem.license      = "MIT"
 
   gem.files        = Dir["README.md", "LICENSE.txt", "lib/**/*.rb", "fend.gemspec", "doc/*.md"]
