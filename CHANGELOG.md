@@ -1,8 +1,11 @@
 ## HEAD
 
+## 0.3.0 (2018-08-18)
+
 * Add `base_errors` plugin (@aradunovic)
 * Do not generate full messages for base errors (@aradunovic)
-* Add support for hash in `Param#each` through `:hash` option (@aradunovic)
+* Add support for hash in `Param#each` through `:hash` option (@aradunovic) - suggested by [@adam12](https://github.com/adam12)
+* Migrate from [~fend.radunovic.io~]() to [aradunovic.github.io/fend](https://aradunovic.github.io/fend)
 
 ## 0.2.0 (2018-05-02)
 
