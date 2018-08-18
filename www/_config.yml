@@ -1,7 +1,7 @@
 title: Fend
 description: Ruby data validation toolkit.
-baseurl: ""
-url: fend.radunovic.io
+baseurl: /fend
+url: aradunovic.github.io
 markdown: kramdown
 destination: build
 exclude:

@@ -77,7 +77,7 @@
         <hr class="divider" />
         <div class="list-group list-group-flush">
           {% for item in site.data.core %}
-          <a href="https://{{ site.url }}/rdoc/classes/Fend/{{ item.path }}"
+          <a href="https://{{ site.url | append: site.baseurl }}/rdoc/classes/Fend/{{ item.path }}"
              class="section-item-name list-group-item list-group-item-action flex-column align-items-start">
             <div class="d-flex w-100 justify-content-between">
               <h5 class="mb-1 section-item-name">{{ item.name }}</h5>
@@ -98,7 +98,7 @@
               <p>{{ item[0] }}</p>
             </div>
             {% for plugin in item[1] %}
-              <a href="https://{{ site.url }}/rdoc/classes/Fend/Plugins/{{ plugin.path }}"
+              <a href="https://{{ site.url | append: site.baseurl }}/rdoc/classes/Fend/Plugins/{{ plugin.path }}"
                 class="list-group-item list-group-item-action flex-column align-items-start">
                 <div class="d-flex w-100 justify-content-between">
                   <h5 class="mb-1 section-item-name">{{ plugin.name }}</h5>
@@ -117,7 +117,7 @@
         <hr class="divider" />
         <div class="list-group list-group-flush">
           {% for item in site.data.guides %}
-          <a href="https://{{ site.url }}/rdoc/files/{{ item.path }}"
+          <a href="https://https://{{ site.url | append: site.baseurl }}/rdoc/files/{{ item.path }}"
              class="section-item-name list-group-item list-group-item-action flex-column align-items-start">
             <div class="d-flex w-100 justify-content-between">
               <h5 class="mb-1 section-item-name">{{ item.name }}</h5>
@@ -136,7 +136,7 @@
         <hr class="divider" />
           {% for version in site.data.versions %}
             <span>
-              <a href="https://{{ site.url }}/rdoc/files/doc/release_notes/{{ version.path }}">{{ version.name }}</a>
+              <a href="https://{{ site.url | append: site.baseurl }}/rdoc/files/doc/release_notes/{{ version.path }}">{{ version.name }}</a>
             </span>
             {% unless forloop.last %}|{% endunless %}
           {% endfor %}
