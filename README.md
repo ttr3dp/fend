@@ -11,6 +11,7 @@ Fend is a small and extensible data validation toolkit.
 * [**Introduction**](#introduction)
     * [Core functionalities](#core-functionalities)
     * [Nested params](#nested-params)
+        * [Iterating over nested hash params](#iterating-over-nested-hash-params)
     * [Arrays](#arrays)
 * [**Plugins overview**](#plugins-overview)
     * [Value helpers](#value-helpers)
@@ -162,12 +163,41 @@ result.failure? #=> true
 result.messages #=> { address: ["must be hash"] }
 ```
 
-As you can see, nested param validations are **not** executed when
-parent param is invalid.
+**NOTE:** Nested param(s) validations won't be run if parent param
+is invalid:
 
 ```ruby
 result = UserValidation.call(username: "test", address: {})
 result.messages #=> { address: { city: ["must be string"], street: ["must be string"] } }
+```
+
+#### Iterating over nested hash params
+
+In order to iterate over nested hash params while ignoring the keys/names
+use `Param#each` method with `hash: true` option:
+
+```ruby
+i.params(:emails) do |emails|
+
+  emails.each(hash: true) do |email_address|
+    email_address.params(:email, :confirmed) do |email, confirmed|
+      email.add_error("must be provided") if email.nil?
+      email.add_error("must be confirmed") if email.valid? && confirmed == false
+    end
+  end
+end
+
+user_params = {
+  emails: {
+    "0" => { email: "love@ruby.com", confirmed: false },
+    "1" => { email: "", confirmed: "" },
+  }
+}
+
+result = UserValidation.call(user_params)
+
+result.messages
+#=> { emails: { "0" => { email: ["must be confirmed"] }, "1" => { email: ["must be provided"] } } }
 ```
 
 ### Arrays
@@ -189,7 +219,7 @@ result = UserValidation.call(tags: [1, 2])
 result.messages #=> { tags: { 0 => ["must be string"], 1 => ["must be string"] } }
 ```
 
-Needless to say, member validation won't be run if `tags` is not an array.
+**NOTE:** Member validation(s) won't be run if `tags` is not an array.
 
 Fend makes it possible to validate specific array members, since `#each` method
 also provides an `index`:
