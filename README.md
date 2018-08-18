@@ -164,7 +164,7 @@ result.messages #=> { address: ["must be hash"] }
 ```
 
 **NOTE:** Nested param(s) validations won't be run if parent param
-is invalid:
+is invalid.
 
 ```ruby
 result = UserValidation.call(username: "test", address: {})
@@ -219,7 +219,7 @@ result = UserValidation.call(tags: [1, 2])
 result.messages #=> { tags: { 0 => ["must be string"], 1 => ["must be string"] } }
 ```
 
-**NOTE:** Member validation(s) won't be run if `tags` is not an array.
+**NOTE:** Member validations won't be run if `tags` is not an array.
 
 Fend makes it possible to validate specific array members, since `#each` method
 also provides an `index`:
