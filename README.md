@@ -82,11 +82,12 @@ require "fend"
 class UserValidation < Fend
   # define validation block
   validation do |i|
-    # specify :username param that needs to be validated
+    # specify username and email params that needs to be validated
     i.params(:username, :email) do |username, email|
       # append error if username value is not string
       username.add_error("must be string") unless username.value.is_a?(String)
 
+      # append error is email is invalid or already exists
       email.add_error("is not a valid email address") unless email.match?(EMAIL_REGEX)
       email.add_error("must be unique") if email.valid? && !unique?(email: email.value)
 
@@ -130,7 +131,7 @@ result.failure? #=> true
 result.input #=> { username: 1234, email: "invalid@email" }
 
 # get result output
-result.input #=> { username: 1234, email: "invalid@email" }
+result.output #=> { username: 1234, email: "invalid@email" }
 
 # get error messages
 result.messages #=> { username: ["must be string"], email: ["is not a valid email address"] }
@@ -252,7 +253,7 @@ validation do |i|
 
     address.validate_type(Hash)
 
-    address.param(:city) do |city|
+    address.params(:city) do |city|
       city.validate_presence
       city.validate_type(String)
     end
@@ -362,14 +363,16 @@ class UserValidation < Fend
   end
 
   validate do |i|
-    i.param(:username) { |username| username.value #=> "john" }
-    i.param(:foo) { |foo| foo.value #=> "foo" }
+    i.params(:username, :foo) do |username, foo|
+      username.value #=>"john"
+      foo.value #=> "foo"
+    end
   end
 end
 
 result = UserValidation.call(username: "john")
 
-result.input #=> { username: "john" }
+result.input #=> { username: "john", foo: "foo" }
 result.output #=> { username: "john", timestamp: 2018-01-01 00:00:00 UTC }
 ```
 
