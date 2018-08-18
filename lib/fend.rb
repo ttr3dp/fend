@@ -186,20 +186,6 @@ class Fend
           @value.fetch(name, nil) if @value.respond_to?(:fetch)
         end
 
-        # Define child param and execute validation block
-        def param(name, &block)
-          Fend.deprecation("Calling Param#param to specify params is deprecated and will not be supported in Fend 0.3.0. Use Param#params method instead.")
-
-          return if flat? && invalid?
-
-          value = self[name]
-          param = _build_param(name, value)
-
-          yield(param)
-
-          _nest_errors(name, param.errors) if param.invalid?
-        end
-
         # Define child params and execute validation block
         def params(*names, &block)
           return if flat? && invalid?

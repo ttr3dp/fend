@@ -9,15 +9,7 @@ class Fend
     #
     # ## Registering dependencies
     #
-    # There are two types of dependencies:
-    #
-    # 1. **Inheritable dependencies** - available in current validation class
-    #                                   and in subclasses
-    # 2. *[DEPRECATED] **Local dependencies** - available only in current validation class
-    #
-    # ### Inheritable dependencies
-    #
-    # Inheritable dependencies can be registered when plugin is loaded:
+    # Dependencies can be registered when plugin is loaded:
     #
     #     plugin :dependencies, user_class: User
     #
@@ -29,27 +21,6 @@ class Fend
     #     Fend.plugin :dependencies, address_checker: AddressChecker.new
     #
     # Now, all `Fend` subclasses will be able to resolve `address_checker`
-    #
-    # ### Local dependencies *[DEPRECATED]
-    #
-    # Local dependencies can be registered in `deps` registry, on instance level.
-    # Recommended place to do this is the initializer.
-    #
-    #     class UserValidation < Fend
-    #       plugin :dependencies
-    #
-    #       def initialize(model)
-    #         # you can pass a dependency on initialization
-    #         deps[:model] = model
-    #
-    #         # or
-    #
-    #         # hardcode it yourself
-    #         deps[:address_checker] = AddressChecker.new
-    #       end
-    #     end
-    #
-    #     user_validation = UserValidation.new(User)
     #
     # ## Resolving dependencies
     #
@@ -73,18 +44,12 @@ class Fend
     #       end
     #     end
     #
-    # ## Overriding inheritable dependencies
+    # ## Overriding dependencies
     #
-    # To override inheritable dependency, just load the plugin again in a
-    # subclass, or define local dependency with the same name.
+    # To override global dependency, just load the plugin again in a subclass
+    # and specify new dependecy value.
     #
     #     plugin :dependencies, user_model: SpecialUser
-    #
-    #     # or
-    #
-    #     def initialize
-    #       deps[:user_model] = SpecialUser
-    #     end
     #
     # ## Example usage
     #
@@ -115,16 +80,10 @@ class Fend
       end
 
       module InstanceMethods
-        def deps
-          Fend.deprecation("Local dependencies are deprecated and will not be supported in Fend 0.3.0. Instead, you can set attributes or define custom methods which will be available in validation block.")
-
-          @_deps ||= self.class.opts[:dependencies].dup
-        end
-
         def validate(&block)
           super if self.class.specified_dependencies.nil?
 
-          dependencies = deps.values_at(*self.class.specified_dependencies)
+          dependencies = self.class.opts[:dependencies].values_at(*self.class.specified_dependencies)
 
           yield(@_input_param, *dependencies) if block_given?
         end

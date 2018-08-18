@@ -45,31 +45,6 @@ RSpec.describe Fend::Param do
     end
   end
 
-  describe "#param" do
-    it "validates nested param" do
-      param.param(:test) { |test| test.add_error("invalid") }
-
-      expect(param.errors).to eq(test: ["invalid"])
-    end
-  end
-
-  describe "#param" do
-    it "defines nested param" do
-      param.params(:test) { |test| test.add_error("invalid") }
-
-      expect(param.errors).to eq(test: ["invalid"])
-    end
-
-    it "defines nested params" do
-      param.params(:foo, :bar) do |foo, bar|
-        foo.add_error("invalid foo")
-        bar.add_error("invalid bar")
-      end
-
-      expect(param.errors).to eq(foo: ["invalid foo"], bar: ["invalid bar"])
-    end
-  end
-
   describe "#each" do
     let(:param) { described_class.new(:input, { foo: [1, 2, 3], bar: { 0 => { name: "jack" }, 1 => { name: "jane" } } }) }
 
