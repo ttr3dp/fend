@@ -31,7 +31,7 @@ class Fend
       DEFAULT_KEY = :base
 
       def self.configure(validation, opts = {})
-          validation.opts[:base_errors_key] = opts[:key] || validation.opts[:base_errors_key] || DEFAULT_KEY
+        validation.opts[:base_errors_key] = opts[:key] || validation.opts[:base_errors_key] || DEFAULT_KEY
       end
 
       module InstanceMethods
