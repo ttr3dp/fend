@@ -29,10 +29,6 @@ Params:
     name: value_helpers
     path: ValueHelpers.html
     description: Provides helper methods for checking & fetching param values.
-  -
-    name: collective_params
-    path: CollectiveParams.html
-    description: "[DEPRECATED] Same feature is provided out of the box since v0.2.0."
 
 Data:
   -
