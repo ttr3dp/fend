@@ -40,7 +40,7 @@ Some of the features include:
 
 ## Documentation
 
-For detailed documentation visit [fend.radunovic.io](http://fend.radunovic.io)
+For detailed documentation visit [aradunovic.github.io/fend](https://aradunovic.github.io/fend)
 
 ## Why?
 
@@ -205,7 +205,7 @@ end
 
 ## Plugins overview
 
-For complete plugins documentation, go to [fend.radunovic.io](http://fend.radunovic.io).
+For complete plugins documentation, go to [aradunovic.github.io/fend](https://aradunovic.github.io/fend).
 
 ### Value helpers
 
